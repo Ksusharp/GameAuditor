@@ -1,22 +1,19 @@
 ﻿using GameAuditor.Models;
 using System.Collections.Generic;
+using OfficeDevPnP.Core.Framework.Provisioning.Model;
 
 namespace GameAuditor.Repositories.Interfaces
 {
-    public interface IEntityRepository
+    public interface IEntityRepository<T> where T : class
     {
-        List<Post> GetAllPosts();
-        Post GetPost(Guid id);
-        Post CreatePost(Post model);
-        Post UpdatePost(Post postForUpdate);
-        Post GetTag(Post model);
-        void DeletePost(Guid id);
-        List<Game> GetAllGames();
-        Game GetGame(Guid id);
-        Game CreateGame(Game model);
-        Game UpdateGame(Game gameForUpdate);
-        Game GetPlatform(Game model);
-        Game GetGenre(Game model);
-        void DeleteGame(Guid id);
+        IEnumerable<T> GetAll();
+        T Get(Guid id);
+        void Create(T entity);
+        void Update(T entity);
+        void Delete(Guid id);
+        T GetTag(T tag);
+        T GetGenre(T genre);
+        T GetPlatform(T platform);
+        void Save();
     }
 }

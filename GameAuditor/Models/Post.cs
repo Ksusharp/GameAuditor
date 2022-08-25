@@ -1,4 +1,6 @@
-﻿namespace GameAuditor.Models
+﻿using OfficeDevPnP.Core.Framework.Provisioning.Model;
+
+namespace GameAuditor.Models
 {
     public class Post
     {

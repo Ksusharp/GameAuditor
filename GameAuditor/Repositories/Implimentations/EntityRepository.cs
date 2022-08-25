@@ -1,79 +1,58 @@
 ﻿using GameAuditor.Database;
 using GameAuditor.Models;
 using GameAuditor.Repositories.Interfaces;
+using Microsoft.EntityFrameworkCore;
+using OfficeDevPnP.Core.Framework.Provisioning.Model;
 
 namespace GameAuditor.Repositories.Implimentations
 {
-    public class EntityRepository : IEntityRepository
+    public class EntityRepository<T> : IEntityRepository<T> where T : class
     {
-        public ApplicationContext _context;
+        public readonly ApplicationContext context;
+        public readonly DbSet<T> dbSet;
         public EntityRepository(ApplicationContext context)
         {
-            _context = context;
+            this.context = context;
+            this.dbSet = context.Set<T>();
         }
-        public List<Post> GetAllPosts()
+        public IEnumerable<T> GetAll()
         {
-            return _context.Posts.ToList();
+            return dbSet.ToList();
         }
-        public Post GetPost(Guid id)
+        public T Get(Guid id)
         {
-            return _context.Posts.Find(id);
+            return dbSet.Find(id);
         }
-        public Post CreatePost(Post model)
+        public void Create(T entity)
         {
-            _context.Posts.Add(model);
-            _context.SaveChanges();
-            return model;
+            dbSet.Add(entity);
+        } 
+        
+        public void Update(T entity)
+        {
+            dbSet.Attach(entity);
+            context.Entry(entity).State = EntityState.Modified;
         }
-        public Post UpdatePost(Post postForUpdate)
+        public void Delete(Guid id)
         {
-            _context.Update(postForUpdate);
-            _context.SaveChanges();
-            return postForUpdate;
+            T entity = dbSet.Find(id);
+            dbSet.Remove(entity);
         }
-        public void DeletePost(Guid id)
+        public T GetTag(T tag)
         {
-            var postForDelete = _context.Posts.Find(id);
-            _context.Posts.Remove(postForDelete);
-            _context.SaveChanges();
+            return dbSet.Find(tag);
         }
-        public Post GetTag(Post tag)
+        public T GetPlatform(T platform)
         {
-            return _context.Posts.Find(tag);
+            return dbSet.Find(platform);
         }
-        public List<Game> GetAllGames()
+        public T GetGenre(T genre)
         {
-            return _context.Games.ToList();
+            return dbSet.Find(genre);
         }
-        public Game GetGame(Guid id)
+        public void Save()
         {
-            return _context.Games.Find(id);
-        }
-        public Game CreateGame(Game model)
-        {
-            _context.Games.Add(model);
-            _context.SaveChanges();
-            return model;
-        }
-        public Game UpdateGame(Game gameForUpdate)
-        {
-            _context.Update(gameForUpdate);
-            _context.SaveChanges();
-            return gameForUpdate;
-        }
-        public Game GetPlatform(Game platform)
-        {
-            return _context.Games.Find(platform);
-        }
-        public Game GetGenre(Game genre)
-        {
-            return _context.Games.Find(genre);
-        }
-        public void DeleteGame(Guid id)
-        {
-            var gameForDelete = _context.Games.Find(id);
-            _context.Games.Remove(gameForDelete);
-            _context.SaveChanges();
+            context.SaveChanges();
         }
     }
 }
