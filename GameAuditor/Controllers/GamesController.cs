@@ -29,11 +29,13 @@ namespace GameAuditor.Controllers
             entityRepository.Create(entity);
             entityRepository.Save();
         }
+        [HttpPut]
         public void Update(Post entity)
         {
             entityRepository.Update(entity);
             entityRepository.Save();
         }
+        [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
             entityRepository.Delete(id);
