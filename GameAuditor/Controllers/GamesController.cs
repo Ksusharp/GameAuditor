@@ -74,17 +74,17 @@ namespace GameAuditor.Controllers
             }
         }
         [HttpGet("{tag}")]
-        public Post GetTag(Post tag)
+        public ActionResult<Post> GetTag(Post tag)
         {
             return entityRepository.GetTag(tag);
         }
         [HttpGet("{platform}")]
-        public Post GetPlatform(Post platform)
+        public ActionResult<Post> GetPlatform(Post platform)
         {
             return entityRepository.GetPlatform(platform);
         }
         [HttpGet("{genre}")]
-        public Post GetGenre(Post genre)
+        public ActionResult<Post> GetGenre(Post genre)
         {
             return entityRepository.GetGenre(genre);
         }
