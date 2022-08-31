@@ -1,8 +1,9 @@
-﻿using OfficeDevPnP.Core.Framework.Provisioning.Model;
+﻿using GameAuditor.Models.Interfaces;
+using OfficeDevPnP.Core.Framework.Provisioning.Model;
 
 namespace GameAuditor.Models
 {
-    public class Game
+    public class Game : IBaseEntity
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

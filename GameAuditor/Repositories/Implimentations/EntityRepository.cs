@@ -8,8 +8,8 @@ namespace GameAuditor.Repositories.Implimentations
 {
     public class EntityRepository<T> : IEntityRepository<T> where T : class
     {
-        public readonly ApplicationContext context;
-        public readonly DbSet<T> dbSet;
+        private readonly ApplicationContext context;
+        private readonly DbSet<T> dbSet;
         public EntityRepository(ApplicationContext context)
         {
             this.context = context;

@@ -4,6 +4,7 @@ using GameAuditor.Models;
 using GameAuditor.Repositories.Interfaces;
 using GameAuditor.Database;
 using GameAuditor.Repositories.Implimentations;
+using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Controllers
 {
@@ -11,7 +12,10 @@ namespace GameAuditor.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
+        //private IEntityRepository<Post> entityRepository { get; set; }
         public IEntityRepository<Post> entityRepository;
+
+        public void Post(IBaseEntity entity);
 
         [HttpGet]
         public IEnumerable<Post> GetAll()
@@ -29,11 +33,13 @@ namespace GameAuditor.Controllers
             entityRepository.Create(entity);
             entityRepository.Save();
         }
+        [HttpPut]
         public void Update(Post entity)
         {
             entityRepository.Update(entity);
             entityRepository.Save();
         }
+        [HttpDelete("{id}")]
         public void Delete(Guid id)
         {
             entityRepository.Delete(id);
