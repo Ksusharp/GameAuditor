@@ -15,8 +15,6 @@ namespace GameAuditor.Controllers
         //private IEntityRepository<Post> entityRepository { get; set; }
         public IEntityRepository<Post> entityRepository;
 
-        public void Post(IBaseEntity entity);
-
         [HttpGet]
         public IEnumerable<Post> GetAll()
         {
