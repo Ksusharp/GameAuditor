@@ -26,22 +26,52 @@ namespace GameAuditor.Controllers
             return entityRepository.Get(id);
         }
         [HttpPost]
-        public void Create(Post entity)
+        public IActionResult Create(Post entity)
         {
-            entityRepository.Create(entity);
-            entityRepository.Save();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                entityRepository.Create(entity);
+                entityRepository.Save();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpPut]
-        public void Update(Post entity)
+        public IActionResult Update(Post entity)
         {
-            entityRepository.Update(entity);
-            entityRepository.Save();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                entityRepository.Update(entity);
+                entityRepository.Save();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpDelete("{id}")]
-        public void Delete(Guid id)
+        public IActionResult Delete(Guid id)
         {
-            entityRepository.Delete(id);
-            entityRepository.Save();
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                entityRepository.Delete(id);
+                entityRepository.Save();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
         [HttpGet("{tag}")]
         public Post GetTag(Post tag)

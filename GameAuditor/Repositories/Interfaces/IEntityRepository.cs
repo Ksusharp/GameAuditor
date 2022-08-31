@@ -1,6 +1,7 @@
 ﻿using GameAuditor.Models;
 using System.Collections.Generic;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
+using Microsoft.AspNetCore.Mvc;
 
 namespace GameAuditor.Repositories.Interfaces
 {
