@@ -1,10 +1,6 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using GameAuditor.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
-using GameAuditor.Repositories.Interfaces;
-using GameAuditor.Database;
-using GameAuditor.Repositories.Implimentations;
-using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Controllers
 {
@@ -12,21 +8,20 @@ namespace GameAuditor.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        //private IEntityRepository<Post> entityRepository { get; set; }
-        public IEntityRepository<Post> entityRepository;
+        public IEntityRepository<Game> entityRepository;
 
         [HttpGet]
-        public IEnumerable<Post> GetAll()
+        public IEnumerable<Game> GetAll()
         {
             return entityRepository.GetAll();
         }
         [HttpGet("{id}")]
-        public Post Get(Guid id)
+        public Game Get(Guid id)
         {
             return entityRepository.Get(id);
         }
         [HttpPost]
-        public IActionResult Create(Post entity)
+        public IActionResult Create(Game entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -42,7 +37,7 @@ namespace GameAuditor.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(Post entity)
+        public IActionResult Update(Game entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -73,18 +68,13 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpGet("{tag}")]
-        public ActionResult<Post> GetTag(Post tag)
-        {
-            return entityRepository.GetTag(tag);
-        }
         [HttpGet("{platform}")]
-        public ActionResult<Post> GetPlatform(Post platform)
+        public ActionResult<Game> GetPlatform(Game platform)
         {
             return entityRepository.GetPlatform(platform);
         }
         [HttpGet("{genre}")]
-        public ActionResult<Post> GetGenre(Post genre)
+        public ActionResult<Game> GetGenre(Game genre)
         {
             return entityRepository.GetGenre(genre);
         }

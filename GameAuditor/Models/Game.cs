@@ -1,16 +1,25 @@
 ﻿using GameAuditor.Models.Interfaces;
-using OfficeDevPnP.Core.Framework.Provisioning.Model;
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GameAuditor.Models
 {
     public class Game : IBaseEntity
     {
         public Guid Id { get; set; }
+        [Required]        
+        [NotNull]
+        [MaxLength(150)]
         public string Name { get; set; }
+        [Required]
+        [NotNull]
         public string Platform { get; set; }
+        [Required]
+        [NotNull]
         public string Genre { get; set; }
+        [MaxLength(1000)]
         public string Description { get; set; }
-        public string ReleaseDate { get; set; }
-
+        [Range(typeof(DateTime), "01/01/1950", "01/01/2150", ErrorMessage = "Введено некорректное значение даты")]
+        public DateTime ReleaseDate { get; set; }
     }
 }
