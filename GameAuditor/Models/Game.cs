@@ -19,7 +19,7 @@ namespace GameAuditor.Models
         public string Genre { get; set; }
         [MaxLength(1000)]
         public string Description { get; set; }
-        [Range(typeof(DateTime), "01/01/1950", "01/01/2150", ErrorMessage = "Введено некорректное значение даты")]
-        public DateTime ReleaseDate { get; set; }
+        //[Range(typeof(DateTime), "01/01/1950", "01/01/2150", ErrorMessage = "Введено некорректное значение даты")]
+        public string ReleaseDate { get; set; }
     }
 }
