@@ -1,6 +1,7 @@
 ﻿using GameAuditor.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
+using GameAuditor.Models.ViewModels;
 
 namespace GameAuditor.Controllers
 {
@@ -9,6 +10,11 @@ namespace GameAuditor.Controllers
     public class GamesController : ControllerBase
     {
         public IEntityRepository<Game> entityRepository;
+
+        public GamesController(IEntityRepository<Game> repository)
+        {
+            entityRepository = repository;
+        }
 
         [HttpGet]
         public IEnumerable<Game> GetAll()
@@ -21,13 +27,21 @@ namespace GameAuditor.Controllers
             return entityRepository.Get(id);
         }
         [HttpPost]
-        public IActionResult Create(Game entity)
+        public IActionResult Create(GameViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                entityRepository.Create(entity);
+                var game = new Game()
+                {
+                    Name = entity.Name,
+                    Description = entity.Description,
+                    ReleaseDate = entity.ReleaseDate,
+                    Genre = entity.Genre,
+                    Platform = entity.Platform
+                };
+                entityRepository.Create(game);
                 entityRepository.Save();
                 return Ok();
             }
@@ -36,14 +50,23 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpPut]
-        public IActionResult Update(Game entity)
+        [HttpPut("update")]
+        public IActionResult Update(GameViewModel entity, [FromQuery] Guid id)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                entityRepository.Update(entity);
+                var game = new Game()
+                {
+                    Id = id,
+                    Name = entity.Name,
+                    Description = entity.Description,
+                    ReleaseDate = entity.ReleaseDate,
+                    Genre = entity.Genre,
+                    Platform = entity.Platform
+                };
+                entityRepository.Update(game);
                 entityRepository.Save();
                 return Ok();
             }

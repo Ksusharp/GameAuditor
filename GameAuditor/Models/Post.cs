@@ -4,9 +4,8 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace GameAuditor.Models
 {
-    public class Post : IBaseEntity
+    public class Post : EntityBase
     {
-        public Guid Id { get; set; }
         [Required]
         [NotNull]
         [MaxLength(250)]

@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using Microsoft.AspNetCore.Mvc;
+using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Repositories.Interfaces
 {
-    public interface IEntityRepository<T> where T : class
+    public interface IEntityRepository<T> where T : EntityBase
     {
         IEnumerable<T> GetAll();
         T Get(Guid id);

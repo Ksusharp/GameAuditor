@@ -1,4 +1,5 @@
 using GameAuditor.Database;
+using GameAuditor.Models;
 using GameAuditor.Repositories.Implimentations;
 using GameAuditor.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -12,7 +13,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-///builder.Services.AddScoped<IEntityRepository, EntityRepository>();
+builder.Services.AddScoped<IEntityRepository<Game>, EntityRepository<Game>>();
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -32,5 +33,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+SeedData.EnsurePopulated(app);
 
 app.Run();

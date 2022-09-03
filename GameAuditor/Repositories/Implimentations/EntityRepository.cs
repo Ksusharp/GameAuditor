@@ -3,10 +3,11 @@ using GameAuditor.Models;
 using GameAuditor.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using OfficeDevPnP.Core.Framework.Provisioning.Model;
+using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Repositories.Implimentations
 {
-    public class EntityRepository<T> : IEntityRepository<T> where T : class
+    public class EntityRepository<T> : IEntityRepository<T> where T : EntityBase
     {
         private readonly ApplicationContext context;
         private readonly DbSet<T> dbSet;
@@ -25,6 +26,7 @@ namespace GameAuditor.Repositories.Implimentations
         }
         public void Create(T entity)
         {
+            //entity.Id = Guid.Empty;
             dbSet.Add(entity);
         } 
         

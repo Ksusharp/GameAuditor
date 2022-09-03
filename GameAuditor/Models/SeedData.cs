@@ -52,7 +52,7 @@ namespace GameAuditor.Models
                         Platform = "платформа №1, платформа №2",
                         Genre = "жанр 2, жанр 4",
                         Description = "описание №1",
-                        ReleaseDate = "18/08/2022"
+                        ReleaseDate = DateTime.Now
                     },
                     new Game
                     {
@@ -66,7 +66,7 @@ namespace GameAuditor.Models
                         Name = "Имя игры 3",
                         Platform = "платформа №1, платформа №4",
                         Genre = "жанр 1, жанр 2",
-                        ReleaseDate = "22/03/2023"
+                        ReleaseDate = DateTime.Now
                     },
                     new Game
                     {
@@ -74,7 +74,7 @@ namespace GameAuditor.Models
                         Platform = "платформа №2, платформа №4",
                         Genre = "жанр 2, жанр 4"
                     }
-                );
+                );;
                 context.SaveChanges();
             }
         }

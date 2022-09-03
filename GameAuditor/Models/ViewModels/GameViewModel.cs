@@ -1,12 +1,11 @@
-﻿using GameAuditor.Models.Interfaces;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 
-namespace GameAuditor.Models
+namespace GameAuditor.Models.ViewModels
 {
-    public class Game : EntityBase
+    public class GameViewModel
     {
-        [Required]        
+        [Required]
         [MaxLength(150)]
         public string Name { get; set; }
 
