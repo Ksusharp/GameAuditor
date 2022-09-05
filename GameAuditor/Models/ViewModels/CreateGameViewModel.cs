@@ -3,7 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace GameAuditor.Models.ViewModels
 {
-    public class GameViewModel
+    public class CreateGameViewModel
     {
         [Required]
         [MaxLength(150)]
@@ -19,7 +19,8 @@ namespace GameAuditor.Models.ViewModels
 
         [MaxLength(1000)]
         public string? Description { get; set; }
-        //[Range(typeof(DateTime), "01/01/1950", "01/01/2150", ErrorMessage = "Введено некорректное значение даты")]
+
+        [Range(typeof(DateTime), "01/01/1950", "01/01/2150", ErrorMessage = "Введено некорректное значение даты")]
         public DateTime? ReleaseDate { get; set; }
     }
 }

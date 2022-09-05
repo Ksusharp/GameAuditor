@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
 using GameAuditor.Models.ViewModels;
+using AutoMapper;
 
 namespace GameAuditor.Controllers
 {
@@ -10,12 +11,16 @@ namespace GameAuditor.Controllers
     public class GamesController : ControllerBase
     {
         public IEntityRepository<Game> entityRepository;
+        private readonly IMapper _mapper;
 
         public GamesController(IEntityRepository<Game> repository)
         {
             entityRepository = repository;
         }
-
+        public GamesController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
         [HttpGet]
         public IEnumerable<Game> GetAll()
         {
@@ -27,21 +32,13 @@ namespace GameAuditor.Controllers
             return entityRepository.Get(id);
         }
         [HttpPost]
-        public IActionResult Create(GameViewModel entity)
+        public IActionResult Create(CreateGameViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                var game = new Game()
-                {
-                    Name = entity.Name,
-                    Description = entity.Description,
-                    ReleaseDate = entity.ReleaseDate,
-                    Genre = entity.Genre,
-                    Platform = entity.Platform
-                };
-                entityRepository.Create(game);
+                entityRepository.Create(_mapper.Map<Game>(entity));
                 entityRepository.Save();
                 return Ok();
             }
@@ -51,22 +48,13 @@ namespace GameAuditor.Controllers
             }
         }
         [HttpPut("update")]
-        public IActionResult Update(GameViewModel entity, [FromQuery] Guid id)
+        public IActionResult Update(CreateGameViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                var game = new Game()
-                {
-                    Id = id,
-                    Name = entity.Name,
-                    Description = entity.Description,
-                    ReleaseDate = entity.ReleaseDate,
-                    Genre = entity.Genre,
-                    Platform = entity.Platform
-                };
-                entityRepository.Update(game);
+                entityRepository.Update(_mapper.Map<Game>(entity));
                 entityRepository.Save();
                 return Ok();
             }

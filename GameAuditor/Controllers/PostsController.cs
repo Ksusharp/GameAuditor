@@ -1,6 +1,8 @@
 ﻿using GameAuditor.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using GameAuditor.Models.ViewModels;
 using GameAuditor.Models;
+using AutoMapper;
 
 namespace GameAuditor.Controllers
 {
@@ -9,7 +11,16 @@ namespace GameAuditor.Controllers
     public class PostsController : ControllerBase
     {
         public IEntityRepository<Post> entityRepository;
+        private readonly IMapper _mapper;
 
+        public PostsController(IEntityRepository<Post> repository)
+        {
+            entityRepository = repository;
+        }
+        public PostsController(IMapper mapper)
+        {
+            _mapper = mapper;
+        }
         [HttpGet]
         public IEnumerable<Post> GetAll()
         {
@@ -21,13 +32,13 @@ namespace GameAuditor.Controllers
             return entityRepository.Get(id);
         }
         [HttpPost]
-        public IActionResult Create(Post entity)
+        public IActionResult Create(CreatePostViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                entityRepository.Create(entity);
+                entityRepository.Create(_mapper.Map<Post>(entity));
                 entityRepository.Save();
                 return Ok();
             }
@@ -37,13 +48,13 @@ namespace GameAuditor.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(Post entity)
+        public IActionResult Update(CreatePostViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                entityRepository.Update(entity);
+                entityRepository.Update(_mapper.Map<Post>(entity));
                 entityRepository.Save();
                 return Ok();
             }
