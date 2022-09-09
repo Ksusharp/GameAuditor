@@ -6,6 +6,7 @@ namespace GameAuditor.Models.ViewModels
     public class UpdateGameViewModel
     {
         [Required]
+        [NotNull]
         [MaxLength(150)]
         public string Name { get; set; }
 

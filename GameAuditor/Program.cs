@@ -1,8 +1,14 @@
 using GameAuditor.Database;
 using GameAuditor.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using GameAuditor.Repositories.Implimentations;
 using GameAuditor.Repositories.Interfaces;
+using GameAuditor.Services.UserService;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Swashbuckle.AspNetCore.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,11 +17,42 @@ builder.Services.AddAutoMapper(typeof(Program));
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
+//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEntityRepository<Game>, EntityRepository<Game>>();
+//builder.Services.AddHttpContextAccessor();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    {
+        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Type = SecuritySchemeType.ApiKey
+    });
+
+    options.OperationFilter<SecurityRequirementsOperationFilter>();
+});
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true, // валидация ключа безопасности
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8 // установка ключа безопасности
+                .GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value)),
+            ValidateIssuer = false, // указывает, будет ли валидироваться издатель при валидации токена
+            //ValidIssuer = AuthOptions.ISSUER, // строка, представляющая издателя
+            ValidateAudience = false // будет ли валидироваться потребитель токена
+            //ValidAudience = AuthOptions.AUDIENCE,  // установка потребителя токена
+        };
+    });
+builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
+    policy =>
+    {
+        policy.WithOrigins("http://localhost:4200").AllowAnyMethod().AllowAnyHeader();
+    }));
 
 builder.Services.AddDbContext<ApplicationContext>(options =>
 {
@@ -30,7 +67,11 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("NgOrigins");
+
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
 
 app.UseAuthorization();
 

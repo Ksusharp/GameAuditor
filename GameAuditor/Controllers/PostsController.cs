@@ -1,7 +1,7 @@
 ﻿using GameAuditor.Repositories.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using GameAuditor.Models.ViewModels;
 using GameAuditor.Models;
+using GameAuditor.Models.ViewModels;
 using AutoMapper;
 
 namespace GameAuditor.Controllers
@@ -48,7 +48,7 @@ namespace GameAuditor.Controllers
             }
         }
         [HttpPut]
-        public IActionResult Update(CreatePostViewModel entity)
+        public IActionResult Update(UpdatePostViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);

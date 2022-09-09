@@ -48,7 +48,7 @@ namespace GameAuditor.Controllers
             }
         }
         [HttpPut("update")]
-        public IActionResult Update(CreateGameViewModel entity)
+        public IActionResult Update(UpdateGameViewModel entity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
