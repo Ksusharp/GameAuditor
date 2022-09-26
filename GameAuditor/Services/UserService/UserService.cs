@@ -16,7 +16,7 @@ namespace GameAuditor.Services.UserService
             var result = string.Empty;
             if (_httpContextAccessor.HttpContext != null)
             {
-                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+                result = _httpContextAccessor.HttpContext.User.Find(ClaimTypes.Name);
             }
             return result;
         }
