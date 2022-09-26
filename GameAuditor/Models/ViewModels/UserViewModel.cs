@@ -1,4 +1,6 @@
-﻿namespace GameAuditor.Models.ViewModels
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GameAuditor.Models.ViewModels
 {
     public class UserViewModel
     {
