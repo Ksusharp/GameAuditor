@@ -17,20 +17,24 @@ namespace GameAuditor.Controllers
         {
             entityRepository = repository;
         }
+
         public GamesController(IMapper mapper)
         {
             _mapper = mapper;
         }
+
         [HttpGet]
         public IEnumerable<Game> GetAll()
         {
             return entityRepository.GetAll();
         }
+
         [HttpGet("{id}")]
         public Game Get(Guid id)
         {
             return entityRepository.Get(id);
         }
+
         [HttpPost]
         public IActionResult Create(CreateGameViewModel entity)
         {
@@ -47,6 +51,7 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut("update")]
         public IActionResult Update(UpdateGameViewModel entity)
         {
@@ -63,6 +68,7 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -79,11 +85,13 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("{platform}")]
         public ActionResult<Game> GetPlatform(Game platform)
         {
             return entityRepository.GetPlatform(platform);
         }
+
         [HttpGet("{genre}")]
         public ActionResult<Game> GetGenre(Game genre)
         {

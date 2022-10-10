@@ -48,7 +48,7 @@ namespace GameAuditor.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginViewModel request)
         {
-            if (user.Username != request.Username)
+            if (user.Username != request.Username.ToLower())
             {
                 return BadRequest("User not found.");
             }

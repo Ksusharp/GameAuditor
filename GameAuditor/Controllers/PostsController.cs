@@ -17,20 +17,24 @@ namespace GameAuditor.Controllers
         {
             entityRepository = repository;
         }
+
         public PostsController(IMapper mapper)
         {
             _mapper = mapper;
         }
+
         [HttpGet]
         public IEnumerable<Post> GetAll()
         {
             return entityRepository.GetAll();
         }
+
         [HttpGet("{id}")]
         public Post Get(Guid id)
         {
             return entityRepository.Get(id);
         }
+
         [HttpPost]
         public IActionResult Create(CreatePostViewModel entity)
         {
@@ -47,6 +51,7 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
@@ -63,6 +68,7 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
@@ -79,6 +85,7 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
         [HttpGet("{tag}")]
         public ActionResult<Post> GetTag(Post tag)
         {
