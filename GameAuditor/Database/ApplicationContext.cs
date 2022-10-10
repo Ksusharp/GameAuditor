@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GameAuditor.Database
 {
-    public class ApplicationContext : DbContext
+    public class ApplicationContext : IdentityDbContext
     {        
         public DbSet<Game> Games { get; set; }
         public DbSet<Post> Posts { get; set; }

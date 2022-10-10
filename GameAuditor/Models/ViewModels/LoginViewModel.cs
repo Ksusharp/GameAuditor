@@ -2,7 +2,7 @@
 
 namespace GameAuditor.Models.ViewModels
 {
-    public class UserViewModel
+    public class LoginViewModel
     {
         [Required(ErrorMessage = "User Name is required")]
         public string Username { get; set; } = string.Empty;

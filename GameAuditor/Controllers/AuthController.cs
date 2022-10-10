@@ -34,7 +34,7 @@ namespace GameAuditor.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserViewModel request)
+        public async Task<ActionResult<User>> Register(LoginViewModel request)
         {
             CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -46,7 +46,7 @@ namespace GameAuditor.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(UserViewModel request)
+        public async Task<ActionResult<string>> Login(LoginViewModel request)
         {
             if (user.Username != request.Username)
             {

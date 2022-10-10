@@ -1,6 +1,6 @@
 ﻿namespace GameAuditor.Models
 {
-    public class User
+    public class Register
     {
         public string Username { get; set; } = string.Empty;
         public byte[] PasswordHash { get; set; }
