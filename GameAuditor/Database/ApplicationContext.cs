@@ -1,4 +1,5 @@
 ﻿using GameAuditor.Models;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace GameAuditor.Database
