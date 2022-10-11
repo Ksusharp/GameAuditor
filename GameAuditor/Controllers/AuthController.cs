@@ -2,7 +2,6 @@
 using GameAuditor.Models.ViewModels;
 using GameAuditor.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -17,6 +16,7 @@ namespace GameAuditor.Controllers
     public class AuthController : ControllerBase
     { 
         public static User user = new User();
+        //public static UserRole userRole = new UserRole();
         private readonly IConfiguration _configuration;
         private readonly IUserService _userService;
 
@@ -118,7 +118,7 @@ namespace GameAuditor.Controllers
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, "Admin")
+                //new Claim(ClaimTypes.Role, user.Role)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(

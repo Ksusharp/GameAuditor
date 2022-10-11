@@ -1,6 +1,6 @@
 ﻿namespace GameAuditor.Models
 {
-    public static class UserRole
+    public class UserRole
     {
         public const string Admin = "Admin";
 
