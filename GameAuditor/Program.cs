@@ -9,6 +9,8 @@ using Microsoft.OpenApi.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Swashbuckle.AspNetCore.Filters;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,15 +19,14 @@ builder.Services.AddAutoMapper(typeof(Program));
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
-//builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEntityRepository<Game>, EntityRepository<Game>>();
-//builder.Services.AddHttpContextAccessor();
 builder.Services.AddSwaggerGen(options =>
 {
-    options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+    options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme
     {
-        Description = "Standard Authorization header using the Bearer scheme (\"bearer {token}\")",
+        Description = "Standard Authorization header using the Bearer scheme (\"Bearer token\")",
         In = ParameterLocation.Header,
         Name = "Authorization",
         Type = SecuritySchemeType.ApiKey
@@ -33,6 +34,18 @@ builder.Services.AddSwaggerGen(options =>
 
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
+
+// For Identity
+builder.Services.AddIdentity<User, IdentityRole>(opts =>
+{
+    //opts.Password.RequireDigit = true;
+    //opts.Password.RequiredLength = 8;
+    //opts.Password.RequireUppercase = true;
+    //opts.Password.RequireLowercase = true;
+    opts.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<ApplicationContext>()
+    .AddDefaultTokenProviders();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -46,6 +59,17 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             //ValidIssuer = AuthOptions.ISSUER, // строка, представляющая издателя
             ValidateAudience = false // будет ли валидироваться потребитель токена
             //ValidAudience = AuthOptions.AUDIENCE,  // установка потребителя токена
+        };
+        options.Events = new JwtBearerEvents()
+        {
+            OnTokenValidated = async ctx =>
+            {
+                var usermgr = ctx.HttpContext.RequestServices.GetRequiredService<UserManager<User>>();
+                var signmgr = ctx.HttpContext.RequestServices.GetRequiredService<SignInManager<User>>();
+                var username = ctx.Principal?.FindFirst(ClaimTypes.Name)?.Value;
+                var user = await usermgr.FindByNameAsync(username);
+                ctx.Principal = await signmgr.CreateUserPrincipalAsync(user);
+            }
         };
     });
 builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",

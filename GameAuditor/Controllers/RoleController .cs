@@ -20,14 +20,17 @@ namespace GameAuditor.Controllers
         public static User user = new User();
         RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;
+
         public RoleController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager)
         {
             _roleManager = roleManager;
             _userManager = userManager;
         }
 
+        [HttpGet("roles")]
         public IActionResult Index() => View(_roleManager.Roles.ToList());
 
+        [HttpPost("create")]
         public async Task<IActionResult> Create(string name)
         {
             if (!string.IsNullOrEmpty(name))
@@ -48,7 +51,7 @@ namespace GameAuditor.Controllers
             return View(name);
         }
 
-        [HttpPost]
+        [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);
@@ -59,8 +62,10 @@ namespace GameAuditor.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpGet("users")]
         public IActionResult UserList() => View(_userManager.Users.ToList());
 
+        [HttpPost("update")]
         public async Task<IActionResult> Edit(Guid userId)
         {
             // получаем пользователя
@@ -80,6 +85,7 @@ namespace GameAuditor.Controllers
             }
             return NotFound();
         }
+
         [HttpPost]
         public async Task<IActionResult> Edit(Guid userId, List<string> roles)
         {
