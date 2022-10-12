@@ -2,7 +2,6 @@
 using GameAuditor.Models;
 using GameAuditor.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
-using OfficeDevPnP.Core.Framework.Provisioning.Model;
 using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Repositories.Implimentations
