@@ -35,19 +35,11 @@ builder.Services.AddSwaggerGen(options =>
     options.OperationFilter<SecurityRequirementsOperationFilter>();
 });
 
-// For Identity
-builder.Services.AddIdentity<User, IdentityRole>(opts =>
-{
-    //opts.Password.RequireDigit = true;
-    //opts.Password.RequiredLength = 8;
-    //opts.Password.RequireUppercase = true;
-    //opts.Password.RequireLowercase = true;
-    opts.User.RequireUniqueEmail = true;
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
 })
-    .AddEntityFrameworkStores<ApplicationContext>()
-    .AddDefaultTokenProviders();
-
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
         options.TokenValidationParameters = new TokenValidationParameters
@@ -72,6 +64,20 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             }
         };
     });
+
+// For Identity
+builder.Services.AddIdentity<User, IdentityRole>(opts =>
+{
+    //opts.Password.RequireDigit = true;
+    //opts.Password.RequiredLength = 8;
+    //opts.Password.RequireUppercase = true;
+    //opts.Password.RequireLowercase = true;
+    opts.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<ApplicationContext>()
+    .AddRoles<IdentityRole>()
+    .AddDefaultTokenProviders();
+
 builder.Services.AddCors(options => options.AddPolicy(name: "NgOrigins",
     policy =>
     {
