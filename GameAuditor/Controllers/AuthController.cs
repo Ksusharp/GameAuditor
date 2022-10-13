@@ -16,8 +16,6 @@ namespace GameAuditor.Controllers
 
     public class AuthController : ControllerBase
     {
-        //public User user = new User();
-        //public static UserRole userRole = new UserRole();
         private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
         private readonly UserManager<User> _userManager;
