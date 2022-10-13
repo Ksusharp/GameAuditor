@@ -2,6 +2,7 @@
 using GameAuditor.Models.ViewModels;
 using GameAuditor.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -14,61 +15,70 @@ namespace GameAuditor.Controllers
     [ApiController]
 
     public class AuthController : ControllerBase
-    { 
-        public static User user = new User();
-        //public static UserRole userRole = new UserRole();
+    {
+        private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly UserManager<User> _userManager;
         private readonly IUserService _userService;
 
-        public AuthController(IConfiguration configuration, IUserService userService)
+        public AuthController(IConfiguration configuration, IUserService userService, UserManager<User> userManager, SignInManager<User> signInManager)
         {
             _configuration = configuration;
             _userService = userService;
+            _userManager = userManager;
+            _signInManager = signInManager;
         }
 
-        [HttpGet, Authorize]
+        [HttpGet("getme"), Authorize]
         public ActionResult<string> GetMe()
         {
-            var userName = _userService.GetMyName();
-            return Ok(userName);
+            var UserName = _userService.GetMyName();
+            return Ok(UserName);
         }
 
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(LoginViewModel request)
         {
-            CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            //CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            var user = new User();
+            user.Email = request.Email;
+            user.UserName = request.UserName;
+            //user.PasswordHash = passwordHash;
+            //user.PasswordSalt = passwordSalt;
 
-            user.Username = request.Username;
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            var result = await _userManager.CreateAsync(user, request.Password);
 
-            return Ok(user);
+            return Ok(result);
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginViewModel request)
         {
-            if (user.Username != request.Username.ToLower())
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
             {
                 return BadRequest("User not found.");
             }
 
-            if (!VerifyPasswordHash(request.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return BadRequest("Wrong password.");
-            }
+            var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
+
+            if (!result.Succeeded) return Unauthorized("Пароль неверный, лошара");
 
             string token = CreateToken(user);
-
-            var refreshToken = GenerateRefreshToken();
-            SetRefreshToken(refreshToken);
 
             return Ok(token);
         }
 
-        [HttpPost("refresh-token")]
+        [HttpPost("refreshtoken")]
         public async Task<ActionResult<string>> RefreshToken()
         {
+            var userName = _userService.GetMyName();
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return BadRequest("User not found.");
+            }
+
             var refreshToken = Request.Cookies["refreshToken"];
 
             if (!user.RefreshToken.Equals(refreshToken))
@@ -82,7 +92,7 @@ namespace GameAuditor.Controllers
 
             string token = CreateToken(user);
             var newRefreshToken = GenerateRefreshToken();
-            SetRefreshToken(newRefreshToken);
+            SetRefreshToken(user, newRefreshToken);
 
             return Ok(token);
         }
@@ -99,7 +109,7 @@ namespace GameAuditor.Controllers
             return refreshToken;
         }
 
-        private void SetRefreshToken(RefreshToken newRefreshToken)
+        private void SetRefreshToken(User user, RefreshToken newRefreshToken)
         {
             var cookieOptions = new CookieOptions
             {
@@ -117,7 +127,7 @@ namespace GameAuditor.Controllers
         {
             List<Claim> claims = new List<Claim>
             {
-                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Name, user.UserName),
                 //new Claim(ClaimTypes.Role, user.Role)
             };
 
