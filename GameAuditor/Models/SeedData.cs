@@ -1,6 +1,6 @@
 ﻿using GameAuditor.Database;
 using Microsoft.EntityFrameworkCore;
-
+/*
 namespace GameAuditor.Models
 {
     public static class SeedData
@@ -49,30 +49,30 @@ namespace GameAuditor.Models
                     new Game
                     {
                         Name = "Имя игры 1",
-                        Platform = "платформа №1, платформа №2",
-                        Genre = "жанр 2, жанр 4",
+                        Platforms = {"PC"},
+                        Genres = "жанр 2, жанр 4",
                         Description = "описание №1",
                         ReleaseDate = DateTime.Now
                     },
                     new Game
                     {
                         Name = "Имя игры 2",
-                        Platform = "платформа №3, платформа №4",
-                        Genre = "жанр 4, жанр 5",
+                        Platforms = "платформа №3, платформа №4",
+                        Genres = "жанр 4, жанр 5",
                         Description = "описание №2"
                     },
                     new Game
                     {
                         Name = "Имя игры 3",
-                        Platform = "платформа №1, платформа №4",
-                        Genre = "жанр 1, жанр 2",
+                        Platforms = "платформа №1, платформа №4",
+                        Genres = "жанр 1, жанр 2",
                         ReleaseDate = DateTime.Now
                     },
                     new Game
                     {
                         Name = "Имя игры 4",
-                        Platform = "платформа №2, платформа №4",
-                        Genre = "жанр 2, жанр 4"
+                        Platforms = "платформа №2, платформа №4",
+                        Genres = "жанр 2, жанр 4"
                     }
                 );;
                 context.SaveChanges();
@@ -80,3 +80,4 @@ namespace GameAuditor.Models
         }
     }
 }
+*/

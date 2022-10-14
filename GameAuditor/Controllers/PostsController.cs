@@ -91,5 +91,22 @@ namespace GameAuditor.Controllers
         {
             return entityRepository.GetTag(tag);
         }
+
+        [HttpPut("updatetag")]
+        public IActionResult Update(Guid tagId, Guid postId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                entityRepository.Update(_mapper.Map<Post>(entity));
+                entityRepository.Save();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

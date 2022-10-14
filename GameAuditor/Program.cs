@@ -107,6 +107,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-SeedData.EnsurePopulated(app);
+//SeedData.EnsurePopulated(app);
 
 app.Run();

@@ -8,6 +8,9 @@ namespace GameAuditor.Database
     {        
         public DbSet<Game> Games { get; set; }
         public DbSet<Post> Posts { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<Genre> Genres { get; set; }
+        public DbSet<Platform> Platforms { get; set; }
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

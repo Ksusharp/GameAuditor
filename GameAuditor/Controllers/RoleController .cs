@@ -104,13 +104,30 @@ namespace GameAuditor.Controllers
             if (user != null)
             {
                 if (await _userManager.IsInRoleAsync(user, roleName))
-                {   
+                {
                     await _userManager.AddToRoleAsync(user, roleName);
                     return Ok();
                 }
                 else return BadRequest("No Role");
-            } else 
-                return BadRequest("No user");
+            }
+            else return BadRequest("No user");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("deleteroletouser")]
+        public async Task<IActionResult> DeleteToRoleAsync(Guid userId, string roleName)
+        {
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+            if (user != null)
+            {
+                if (await _userManager.IsInRoleAsync(user, roleName))
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleName);
+                    return Ok();
+                }
+                else return BadRequest("No Role");
+            }
+            else return BadRequest("No user");
         }
     }
 }
