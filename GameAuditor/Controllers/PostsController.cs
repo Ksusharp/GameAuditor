@@ -91,7 +91,7 @@ namespace GameAuditor.Controllers
         {
             return entityRepository.GetTag(tag);
         }
-
+        /*
         [HttpPut("updatetag")]
         public IActionResult Update(Guid tagId, Guid postId)
         {
@@ -107,6 +107,7 @@ namespace GameAuditor.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        }
+        
+        }*/
     }
 }

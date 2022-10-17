@@ -8,6 +8,9 @@ namespace GameAuditor.Models
     {
         [Required]
         [NotNull]
+        public string OwnerID { get; set; }
+        [Required]
+        [NotNull]
         [MaxLength(250)]
         public string Title { get; set; }
 
