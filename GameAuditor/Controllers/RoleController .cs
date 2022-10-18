@@ -15,7 +15,6 @@ namespace GameAuditor.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         RoleManager<IdentityRole> _roleManager;
@@ -66,13 +65,14 @@ namespace GameAuditor.Controllers
             if (role != null)
             {
                 IdentityResult result = await _roleManager.DeleteAsync(role);
+                return Ok(result);
             }
-            return RedirectToAction("Index");
+            return NotFound();
         }
 
         [Authorize(Roles = "Admin")]
         [HttpGet("users")]
-        public IActionResult UserList() => View(_userManager.Users.ToList());
+        public IActionResult UserList() => Ok(_userManager.Users.ToList());
 
         [Authorize(Roles = "Admin")]
         [HttpPost("update")]
@@ -91,7 +91,7 @@ namespace GameAuditor.Controllers
                     UserRoles = userRoles,
                     AllRoles = allRoles
                 };
-                return View(model);
+                return Ok(model);
             }
             return NotFound();
         }
@@ -103,41 +103,31 @@ namespace GameAuditor.Controllers
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
-                var existRole = _roleManager.Roles.Any(x => x.Name == roleName);
-                if (existRole)
+                if (await _userManager.IsInRoleAsync(user, roleName))
                 {
                     await _userManager.AddToRoleAsync(user, roleName);
                     return Ok();
                 }
                 else return BadRequest("No Role");
-            } else 
-                return BadRequest("No user");
+            }
+            else return BadRequest("No user");
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost]
-        public async Task<IActionResult> Edit(Guid userId, List<string> roles)
+        [HttpPost("deleteroletouser")]
+        public async Task<IActionResult> DeleteToRoleAsync(Guid userId, string roleName)
         {
-            // получаем пользователя
-            User user = await _userManager.FindByIdAsync(userId.ToString());
+            var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
-                // получем список ролей пользователя
-                var userRoles = await _userManager.GetRolesAsync(user);
-                // получаем все роли
-                var allRoles = _roleManager.Roles.ToList();
-                // получаем список ролей, которые были добавлены
-                var addedRoles = roles.Except(userRoles);
-                // получаем роли, которые были удалены
-                var removedRoles = userRoles.Except(roles);
-
-                await _userManager.AddToRolesAsync(user, addedRoles);
-
-                await _userManager.RemoveFromRolesAsync(user, removedRoles);
-
-                return RedirectToAction("UserList");
+                if (await _userManager.IsInRoleAsync(user, roleName))
+                {
+                    await _userManager.RemoveFromRoleAsync(user, roleName);
+                    return Ok();
+                }
+                else return BadRequest("No Role");
             }
-            return NotFound();
+            else return BadRequest("No user");
         }
     }
 }

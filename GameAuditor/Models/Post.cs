@@ -8,6 +8,9 @@ namespace GameAuditor.Models
     {
         [Required]
         [NotNull]
+        public string OwnerID { get; set; }
+        [Required]
+        [NotNull]
         [MaxLength(250)]
         public string Title { get; set; }
 
@@ -18,7 +21,8 @@ namespace GameAuditor.Models
 
         [Required]
         [NotNull]
-        public string Tags { get; set; }
+        //public string Tag { get; set; }
+        public virtual ICollection<Tag> Tags { get; set; }
 
         [NotNull]
         public DateTime CreatedDate { get; set; } = DateTime.Now;
