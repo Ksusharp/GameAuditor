@@ -1,5 +1,4 @@
 ﻿using GameAuditor.Database;
-using GameAuditor.Models;
 using GameAuditor.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using GameAuditor.Models.Interfaces;

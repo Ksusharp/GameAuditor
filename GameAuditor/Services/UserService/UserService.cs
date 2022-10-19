@@ -7,7 +7,7 @@ namespace GameAuditor.Services.UserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-    public UserService(IHttpContextAccessor httpContextAccessor)
+        public UserService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
@@ -18,6 +18,15 @@ namespace GameAuditor.Services.UserService
             if (_httpContextAccessor.HttpContext != null)
             {
                 result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+            }
+            return result;
+        }
+        public string GetMyId()
+        {
+            var result = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
             }
             return result;
         }

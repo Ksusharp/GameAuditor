@@ -16,15 +16,20 @@ namespace GameAuditor.Controllers
     {
         RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;
+        public Post _resource;
         public IEntityRepository<Post> entityRepository;
+
         private readonly IMapper _mapper;
+        private readonly IUserService _userService;
 
 
-        public PostsController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IEntityRepository<Post> repository)
+        public PostsController(Post resource, IUserService userService, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IEntityRepository<Post> repository)
         {
             entityRepository = repository;
             _roleManager = roleManager;
             _userManager = userManager;
+            _userService = userService;
+            _resource = resource;
         }
 
         public PostsController(IMapper mapper)
@@ -64,49 +69,8 @@ namespace GameAuditor.Controllers
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                entityRepository.Update(_mapper.Map<Post>(entity));
-                entityRepository.Save();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                entityRepository.Delete(id);
-                entityRepository.Save();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{tag}")]
-        public ActionResult<Post> GetTag(Post tag)
-        {
-            return entityRepository.GetTag(tag);
-        }
-        /*
-        [HttpPut("{ownpost}")]
-        public IActionResult UpdateOwnPost(Post Id, UpdatePostViewModel entity)
-        {
-            if () 
-            {
+            if (_resource.OwnerID == _userService.GetMyId())
+            { 
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                 try
@@ -120,7 +84,36 @@ namespace GameAuditor.Controllers
                     return BadRequest(ex.Message);
                 }
             }
-            else BadRequest();
-        }*/
+            else 
+                return BadRequest();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            if (_resource.OwnerID == _userService.GetMyId())
+            {
+                    if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                try
+                {
+                    entityRepository.Delete(id);
+                    entityRepository.Save();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+                return BadRequest();
+        }
+
+        [HttpGet("{tag}")]
+        public ActionResult<Post> GetTag(Post tag)
+        {
+            return entityRepository.GetTag(tag);
+        }
     }
 }

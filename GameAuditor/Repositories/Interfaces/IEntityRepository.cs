@@ -1,6 +1,7 @@
 ﻿using GameAuditor.Models;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Repositories.Interfaces
