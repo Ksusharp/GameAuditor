@@ -3,6 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
 using GameAuditor.Models.ViewModels;
 using AutoMapper;
+using GameAuditor.Services.UserService;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization.Infrastructure;
 
 namespace GameAuditor.Controllers
 {
@@ -10,12 +14,17 @@ namespace GameAuditor.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
+        RoleManager<IdentityRole> _roleManager;
+        UserManager<User> _userManager;
         public IEntityRepository<Post> entityRepository;
         private readonly IMapper _mapper;
 
-        public PostsController(IEntityRepository<Post> repository)
+
+        public PostsController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IEntityRepository<Post> repository)
         {
             entityRepository = repository;
+            _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         public PostsController(IMapper mapper)
@@ -55,6 +64,7 @@ namespace GameAuditor.Controllers
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
+
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
@@ -92,22 +102,25 @@ namespace GameAuditor.Controllers
             return entityRepository.GetTag(tag);
         }
         /*
-        [HttpPut("updatetag")]
-        public IActionResult Update(Guid tagId, Guid postId)
+        [HttpPut("{ownpost}")]
+        public IActionResult UpdateOwnPost(Post Id, UpdatePostViewModel entity)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
+            if () 
             {
-                entityRepository.Update(_mapper.Map<Post>(entity));
-                entityRepository.Save();
-                return Ok();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                try
+                {
+                    entityRepository.Update(_mapper.Map<Post>(entity));
+                    entityRepository.Save();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        
+            else BadRequest();
         }*/
     }
 }

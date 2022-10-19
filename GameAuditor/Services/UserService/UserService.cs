@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 
 namespace GameAuditor.Services.UserService
 {
@@ -6,7 +7,7 @@ namespace GameAuditor.Services.UserService
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public UserService(IHttpContextAccessor httpContextAccessor)
+    public UserService(IHttpContextAccessor httpContextAccessor)
         {
             _httpContextAccessor = httpContextAccessor;
         }
