@@ -21,5 +21,15 @@ namespace GameAuditor.Services.UserService
             }
             return result;
         }
+
+        public string GetMyId()
+        {
+            var result = string.Empty;
+            if (_httpContextAccessor.HttpContext != null)
+            {
+                result = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+            }
+            return result;
+        }
     }
 }

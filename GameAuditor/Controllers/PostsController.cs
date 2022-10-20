@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
 using GameAuditor.Models.ViewModels;
 using AutoMapper;
+using NuGet.Protocol.Core.Types;
+using GameAuditor.Services.UserService;
+using Microsoft.AspNetCore.Identity;
 
 namespace GameAuditor.Controllers
 {
@@ -12,10 +15,14 @@ namespace GameAuditor.Controllers
     {
         public IEntityRepository<Post> entityRepository;
         private readonly IMapper _mapper;
+        private readonly UserManager<User> _userManager;
+        private readonly IUserService _userService;
 
-        public PostsController(IEntityRepository<Post> repository)
+        public PostsController(IUserService userService, UserManager<User> userManager, IEntityRepository<Post> repository)
         {
             entityRepository = repository;
+            _userService = userService;
+            _userManager = userManager;
         }
 
         public PostsController(IMapper mapper)
@@ -55,18 +62,23 @@ namespace GameAuditor.Controllers
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
+            if (Post.OwnerID = _userService.GetMyId())
             {
-                entityRepository.Update(_mapper.Map<Post>(entity));
-                entityRepository.Save();
-                return Ok();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                try
+                {
+                    entityRepository.Update(_mapper.Map<Post>(entity));
+                    entityRepository.Save();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            else
+                return BadRequest();
         }
 
         [HttpDelete("{id}")]
