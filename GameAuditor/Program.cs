@@ -11,17 +11,21 @@ using System.Text;
 using Swashbuckle.AspNetCore.Filters;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
+using GameAuditor.AutomapperProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAutoMapper(typeof(Program));
+builder.Services.AddAutoMapper(typeof(GameAutomapper));
 //builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IEntityRepository<Game>, EntityRepository<Game>>();
+builder.Services.AddScoped<IEntityRepository<Post>, EntityRepository<Post>>();
+builder.Services.AddScoped<IEntityRepository<PostTag>, EntityRepository<PostTag>>();
+builder.Services.AddScoped<IEntityRepository<TagNavigation>, EntityRepository<TagNavigation>>();
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("bearer", new OpenApiSecurityScheme

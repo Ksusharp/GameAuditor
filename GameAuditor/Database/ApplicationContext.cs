@@ -7,10 +7,17 @@ namespace GameAuditor.Database
     public class ApplicationContext : IdentityDbContext<User>
     {        
         public DbSet<Game> Games { get; set; }
+
         public DbSet<Post> Posts { get; set; }
-        public DbSet<Tag> Tags { get; set; }
+
+        public DbSet<PostTag> Tags { get; set; }
+
         public DbSet<Genre> Genres { get; set; }
+
         public DbSet<Platform> Platforms { get; set; }
+
+        public DbSet<TagNavigation> TagNavigation { get; set; }
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -18,6 +25,8 @@ namespace GameAuditor.Database
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<Game>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<PostTag>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<PostTag>().HasIndex(x => x.Tag).IsUnique();
         }
     }
 }

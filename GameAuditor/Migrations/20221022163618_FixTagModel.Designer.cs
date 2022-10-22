@@ -4,6 +4,7 @@ using GameAuditor.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameAuditor.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20221022163618_FixTagModel")]
+    partial class FixTagModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,7 +98,6 @@ namespace GameAuditor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OwnerId")
@@ -120,17 +121,18 @@ namespace GameAuditor.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("PostId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Tag")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Tag")
-                        .IsUnique();
+                    b.HasIndex("PostId");
 
                     b.ToTable("Tags");
                 });
@@ -378,6 +380,13 @@ namespace GameAuditor.Migrations
                         .HasForeignKey("GameId");
                 });
 
+            modelBuilder.Entity("GameAuditor.Models.PostTag", b =>
+                {
+                    b.HasOne("GameAuditor.Models.Post", null)
+                        .WithMany("Tags")
+                        .HasForeignKey("PostId");
+                });
+
             modelBuilder.Entity("GameAuditor.Models.TagNavigation", b =>
                 {
                     b.HasOne("GameAuditor.Models.Post", "Post")
@@ -449,6 +458,11 @@ namespace GameAuditor.Migrations
                     b.Navigation("Genres");
 
                     b.Navigation("Platforms");
+                });
+
+            modelBuilder.Entity("GameAuditor.Models.Post", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }

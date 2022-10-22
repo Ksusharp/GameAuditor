@@ -1,8 +1,14 @@
-﻿namespace GameAuditor.Models
+﻿using GameAuditor.Models.Interfaces;
+
+namespace GameAuditor.Models
 {
-    public class TagNavigation
+    public class TagNavigation : EntityBase
     {
+        public Guid? PostId { get; set; }
         public Post Post { get; set; }
-        public Tags Tags { get; set; }
+
+        public Guid? TagId { get; set; }
+
+        public PostTag Tag { get; set; }
     }
 }

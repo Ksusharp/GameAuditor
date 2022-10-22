@@ -4,6 +4,7 @@ using GameAuditor.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace GameAuditor.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    partial class ApplicationContextModelSnapshot : ModelSnapshot
+    [Migration("20221022162953_AddNxN")]
+    partial class AddNxN
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -96,7 +98,6 @@ namespace GameAuditor.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("CreatedDate")
-                        .IsRequired()
                         .HasColumnType("datetime2");
 
                     b.Property<string>("OwnerId")
@@ -120,40 +121,19 @@ namespace GameAuditor.Migrations
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier")
-                        .HasDefaultValueSql("NEWID()");
-
-                    b.Property<string>("Tag")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Tag")
-                        .IsUnique();
-
-                    b.ToTable("Tags");
-                });
-
-            modelBuilder.Entity("GameAuditor.Models.TagNavigation", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("PostId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("TagId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<int>("TagType")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("PostId");
 
-                    b.HasIndex("TagId");
-
-                    b.ToTable("TagNavigation");
+                    b.ToTable("Tags");
                 });
 
             modelBuilder.Entity("GameAuditor.Models.User", b =>
@@ -378,19 +358,11 @@ namespace GameAuditor.Migrations
                         .HasForeignKey("GameId");
                 });
 
-            modelBuilder.Entity("GameAuditor.Models.TagNavigation", b =>
+            modelBuilder.Entity("GameAuditor.Models.PostTag", b =>
                 {
-                    b.HasOne("GameAuditor.Models.Post", "Post")
-                        .WithMany()
+                    b.HasOne("GameAuditor.Models.Post", null)
+                        .WithMany("Tags")
                         .HasForeignKey("PostId");
-
-                    b.HasOne("GameAuditor.Models.PostTag", "Tag")
-                        .WithMany()
-                        .HasForeignKey("TagId");
-
-                    b.Navigation("Post");
-
-                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -449,6 +421,11 @@ namespace GameAuditor.Migrations
                     b.Navigation("Genres");
 
                     b.Navigation("Platforms");
+                });
+
+            modelBuilder.Entity("GameAuditor.Models.Post", b =>
+                {
+                    b.Navigation("Tags");
                 });
 #pragma warning restore 612, 618
         }
