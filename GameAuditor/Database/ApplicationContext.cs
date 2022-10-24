@@ -24,9 +24,11 @@ namespace GameAuditor.Database
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Game>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<Game>().Property(x => x.Id).HasDefaultValueSql("NEWID()"); 
+            modelBuilder.Entity<Post>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<PostTag>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<PostTag>().HasIndex(x => x.Tag).IsUnique();
+            //modelBuilder.Entity<PostTag>().HasData;
         }
     }
 }

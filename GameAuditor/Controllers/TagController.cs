@@ -14,22 +14,12 @@ namespace GameAuditor.Controllers
     [ApiController]
     public class TagController : Controller
     {
-        RoleManager<IdentityRole> _roleManager;
-        UserManager<User> _userManager;
         public IEntityRepository<PostTag> _entityRepository;
 
-        private readonly IMapper _mapper;
-        private readonly IUserService _userService;
-
-
-        public TagController(IUserService userService, RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IEntityRepository<PostTag> repository)
+        public TagController(IEntityRepository<PostTag> repository)
         {
             _entityRepository = repository;
-            _roleManager = roleManager;
-            _userManager = userManager;
-            _userService = userService;
         }
-
 
         [HttpPost]
         public IActionResult Create(PostTag entity)

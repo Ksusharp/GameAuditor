@@ -24,7 +24,6 @@ namespace GameAuditor.Repositories.Implimentations
         }
         public void Create(T entity)
         {
-            //entity.Id = Guid.Empty;
             dbSet.Add(entity);
         }
 

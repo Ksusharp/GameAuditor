@@ -16,10 +16,10 @@ namespace GameAuditor.Controllers
 
     public class AuthController : ControllerBase
     {
-        private readonly SignInManager<User> _signInManager;
         private readonly IConfiguration _configuration;
-        private readonly UserManager<User> _userManager;
         private readonly IUserService _userService;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
 
         public AuthController(IConfiguration configuration, IUserService userService, UserManager<User> userManager, SignInManager<User> signInManager)
         {
@@ -39,12 +39,9 @@ namespace GameAuditor.Controllers
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(LoginViewModel request)
         {
-            //CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
             var user = new User();
             user.Email = request.Email;
             user.UserName = request.UserName;
-            //user.PasswordHash = passwordHash;
-            //user.PasswordSalt = passwordSalt;
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
@@ -62,7 +59,7 @@ namespace GameAuditor.Controllers
 
             var result = await _signInManager.PasswordSignInAsync(request.UserName, request.Password, false, false);
 
-            if (!result.Succeeded) return Unauthorized("Пароль неверный, лошара");
+            if (!result.Succeeded) return Unauthorized("Wrong password");
 
             string token = CreateToken(user);
 
@@ -76,18 +73,18 @@ namespace GameAuditor.Controllers
             var user = await _userManager.FindByNameAsync(userName);
             if (user == null)
             {
-                return BadRequest("User not found.");
+                return BadRequest("User not found");
             }
 
             var refreshToken = Request.Cookies["refreshToken"];
 
             if (!user.RefreshToken.Equals(refreshToken))
             {
-                return Unauthorized("Invalid Refresh Token.");
+                return Unauthorized("Invalid refresh token");
             }
             else if (user.TokenExpires < DateTime.Now)
             {
-                return Unauthorized("Token expired.");
+                return Unauthorized("Token expired");
             }
 
             string token = CreateToken(user);
@@ -128,7 +125,6 @@ namespace GameAuditor.Controllers
             List<Claim> claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.UserName),
-                //new Claim(ClaimTypes.Role, user.Role)
             };
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(
@@ -144,24 +140,6 @@ namespace GameAuditor.Controllers
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
 
             return jwt;
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
         }
     }
 }

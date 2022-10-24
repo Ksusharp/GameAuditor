@@ -7,5 +7,7 @@ namespace GameAuditor.Models
     {
         [Required]
         public string Tag { get; set; }
+
+        public IList<TagNavigation> TagNavigation { get; set; }
     }
 }

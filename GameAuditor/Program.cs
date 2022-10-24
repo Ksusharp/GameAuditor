@@ -15,9 +15,7 @@ using GameAuditor.AutomapperProfiles;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 builder.Services.AddAutoMapper(typeof(GameAutomapper));
-//builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();
 builder.Services.AddControllers();
 builder.Services.AddHttpContextAccessor();
@@ -69,7 +67,6 @@ builder.Services.AddAuthentication(options => {
         };
     });
 
-// For Identity
 builder.Services.AddIdentity<User, IdentityRole>(opts =>
 {
     //opts.Password.RequireDigit = true;
@@ -94,7 +91,6 @@ builder.Services.AddDbContext<ApplicationContext>(options =>
 });
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

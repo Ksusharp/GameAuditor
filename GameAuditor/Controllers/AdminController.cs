@@ -11,15 +11,11 @@ namespace GameAuditor.Controllers
     [Authorize (Roles = "Admin")]
     public class AdminController : Controller
     {
-        RoleManager<IdentityRole> _roleManager;
         UserManager<User> _userManager;
-        private readonly IUserService _userService;
 
-        public AdminController(RoleManager<IdentityRole> roleManager, UserManager<User> userManager, IUserService userService)
+        public AdminController(UserManager<User> userManager)
         {
-            _roleManager = roleManager;
             _userManager = userManager;
-            _userService = userService;
         }
 
         [HttpDelete("deleteuser")]
@@ -31,7 +27,7 @@ namespace GameAuditor.Controllers
                 await _userManager.DeleteAsync(user);
                 return Ok();
             }
-            else return BadRequest("No User");
+            else return BadRequest("User not found");
         }
     }
 }

@@ -18,8 +18,7 @@ namespace GameAuditor.Models
         public string Content { get; set; }
 
         [Required]
-        //public string PostTag { get; set; }
-        //public virtual IEnumerable<PostTag> Tags { get; set; }
+        public IList<TagNavigation> TagNavigation { get; set; }
 
         [NotNull]
         public DateTime? CreatedDate { get; set; } = DateTime.Now;

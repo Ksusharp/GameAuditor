@@ -9,7 +9,9 @@ namespace GameAuditor.AutomapperProfiles
         public GameAutomapper()
         {
             CreateMap<Game, CreateGameViewModel>().ReverseMap();
+            CreateMap<Game, UpdatePostViewModel>().ReverseMap();
             CreateMap<Post, CreatePostViewModel>().ReverseMap();
+            CreateMap<Post, UpdatePostViewModel>().ReverseMap();
         }
     }
 }

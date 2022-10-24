@@ -34,12 +34,11 @@ namespace GameAuditor.Controllers
         {
             var userName = _userService.GetMyName();
             var user = await _userManager.FindByNameAsync(userName);
-            // получем список ролей пользователя
             return await _userManager.GetRolesAsync(user);
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("create")]
+        [HttpPost("createrole")]
         public async Task<IActionResult> Create(string name)
         {
             if (!string.IsNullOrEmpty(name))
@@ -54,7 +53,8 @@ namespace GameAuditor.Controllers
                     return BadRequest(result.Errors);
                 }
             }
-            return BadRequest("null name");
+
+            return BadRequest("Null name");
         }
 
         [Authorize(Roles = "Admin")]
@@ -67,6 +67,7 @@ namespace GameAuditor.Controllers
                 IdentityResult result = await _roleManager.DeleteAsync(role);
                 return Ok(result);
             }
+
             return NotFound();
         }
 
@@ -78,11 +79,9 @@ namespace GameAuditor.Controllers
         [HttpPost("update")]
         public async Task<IActionResult> Edit(Guid userId)
         {
-            // получаем пользователя
             User user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
-                // получем список ролей пользователя
                 var userRoles = await _userManager.GetRolesAsync(user);
                 var allRoles = _roleManager.Roles.ToList();
                 ChangeRoleViewModel model = new ChangeRoleViewModel
@@ -91,8 +90,10 @@ namespace GameAuditor.Controllers
                     UserRoles = userRoles,
                     AllRoles = allRoles
                 };
+
                 return Ok(model);
             }
+
             return NotFound();
         }
 

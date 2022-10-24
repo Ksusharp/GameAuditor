@@ -16,9 +16,6 @@ namespace GameAuditor.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        RoleManager<IdentityRole> _roleManager;
-        UserManager<User> _userManager;
-        private Post _resource;
         private readonly IEntityRepository<Post> _entityRepository;
         private readonly IEntityRepository<PostTag> _postTagRepository;
         private readonly IEntityRepository<TagNavigation> _tagNavigationRepository;
@@ -27,16 +24,13 @@ namespace GameAuditor.Controllers
 
 
         public PostsController(IEntityRepository<Post> repository, IEntityRepository<PostTag> postTag,
-            IEntityRepository<TagNavigation> tagNavigationRepository, IMapper mapper)
+            IEntityRepository<TagNavigation> tagNavigationRepository, IMapper mapper, IUserService userService)
         {
             _entityRepository = repository;
-            //_roleManager = roleManager;
-            //_userManager = userManager;
-            //_userService = userService;
             _postTagRepository = postTag;
-            //_resource = resource;
             _tagNavigationRepository = tagNavigationRepository;
             _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpGet]
@@ -51,6 +45,7 @@ namespace GameAuditor.Controllers
             return _entityRepository.Get(id);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Create(CreatePostViewModel entity)
         {
@@ -59,7 +54,7 @@ namespace GameAuditor.Controllers
             try
             {
                 var newPost = _mapper.Map<Post>(entity);
-                newPost.OwnerId = "04f10f0e-5eaf-444d-b6f1-91ef3e88c7aa";
+                newPost.OwnerId = _userService.GetMyId();
                 _entityRepository.Create(newPost);
                 if (entity.Tags.Any())
                 {
@@ -80,10 +75,12 @@ namespace GameAuditor.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
-            if (_resource.OwnerId == _userService.GetMyId())
+            var post = new Post();
+            if (post.OwnerId == _userService.GetMyId())
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
@@ -102,10 +99,12 @@ namespace GameAuditor.Controllers
                 return BadRequest();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            if (_resource.OwnerId == _userService.GetMyId())
+            var post = new Post();
+            if (post.OwnerId == _userService.GetMyId())
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);

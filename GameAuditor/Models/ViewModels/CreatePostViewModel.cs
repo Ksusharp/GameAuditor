@@ -15,7 +15,6 @@ namespace GameAuditor.Models.ViewModels
 
         [Required]
         [NotNull]
-        //public string PostTag { get; set; }
         public virtual IEnumerable<PostTag> Tags { get; set; }
 
         [NotNull]
