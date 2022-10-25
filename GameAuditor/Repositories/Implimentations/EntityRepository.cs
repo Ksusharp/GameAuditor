@@ -22,6 +22,7 @@ namespace GameAuditor.Repositories.Implimentations
         {
             return dbSet.Find(id);
         }
+
         public void Create(T entity)
         {
             dbSet.Add(entity);

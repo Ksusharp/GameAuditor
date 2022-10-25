@@ -79,14 +79,14 @@ namespace GameAuditor.Controllers
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
-            var post = new Post();
-            if (post.OwnerId == _userService.GetMyId())
+            var newPost = _mapper.Map<Post>(entity);
+            if (newPost.OwnerId == _userService.GetMyId())
             {
                 if (!ModelState.IsValid)
                     return BadRequest(ModelState);
                 try
                 {
-                    _entityRepository.Update(_mapper.Map<Post>(entity));
+                    _entityRepository.Update(newPost);
                     _entityRepository.Save();
                     return Ok();
                 }
@@ -103,7 +103,7 @@ namespace GameAuditor.Controllers
         [HttpDelete("{id}")]
         public IActionResult Delete(Guid id)
         {
-            var post = new Post();
+            var post = _entityRepository.Get(id);
             if (post.OwnerId == _userService.GetMyId())
             {
                 if (!ModelState.IsValid)
@@ -124,9 +124,25 @@ namespace GameAuditor.Controllers
         }
 
         [HttpGet("{tag}")]
-        public ActionResult<Post> GetTag(Post tag)
+        public ActionResult<Post> GetTag(Guid id)
         {
-            return _entityRepository.GetTag(tag);
+            var post = _entityRepository.Get(id);
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
+            {
+                if (post.TagNavigation.Any())
+                {
+                    var postTags = post.TagNavigation.Select(x => x.Tag).ToList();
+                    return postTags;
+                }
+                else
+                    return BadRequest("Post has no tags");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

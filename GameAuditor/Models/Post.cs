@@ -21,9 +21,9 @@ namespace GameAuditor.Models
         public IList<TagNavigation> TagNavigation { get; set; }
 
         [NotNull]
-        public DateTime? CreatedDate { get; set; } = DateTime.Now;
+        public DateTime? CreatedDate { get; set; }
 
         [NotNull]
-        public DateTime? UpdatedDate { get; set;} = DateTime.Now;
+        public DateTime? UpdatedDate { get; set;}
     }
 }
