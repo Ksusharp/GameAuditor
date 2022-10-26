@@ -3,12 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
 using GameAuditor.Models.ViewModels;
 using AutoMapper;
-using GameAuditor.Repositories.Implimentations;
 using GameAuditor.Services.UserService;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authorization.Infrastructure;
-using System.Linq;
 
 namespace GameAuditor.Controllers
 {
@@ -96,7 +92,7 @@ namespace GameAuditor.Controllers
                 }
             }
             else
-                return BadRequest();
+                return BadRequest("You are not the owner of the post");
         }
 
         [Authorize]
@@ -120,21 +116,23 @@ namespace GameAuditor.Controllers
                 }
             }
             else
-                return BadRequest();
+                return BadRequest("You are not the owner of the post");
         }
 
-        [HttpGet("{tag}")]
-        public ActionResult<Post> GetTag(Guid id)
+        [HttpGet("{tagsfrompost}")]
+        public IActionResult GetTag(Guid id)
         {
-            var post = _entityRepository.Get(id);
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
+            var postTags = _tagNavigationRepository.GetAll().Where(x => x.PostId == id);
             try
             {
-                if (post.TagNavigation.Any())
+                if (postTags.Any())
                 {
-                    var postTags = post.TagNavigation.Select(x => x.Tag).ToList();
-                    return postTags;
+                    var tags = from tag in postTags
+                               select new { TagId = tag.TagId, Tag = tag.Tag };
+                    tags.ToList();
+                    return Ok(tags);
                 }
                 else
                     return BadRequest("Post has no tags");
