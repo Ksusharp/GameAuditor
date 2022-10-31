@@ -129,8 +129,7 @@ namespace GameAuditor.Controllers
             {
                 if (postTags.Any())
                 {
-                    var tags = from tag in postTags
-                               select new { TagId = tag.TagId, Tag = tag.Tag };
+                    var tags = postTags.Select(tag => new { TagId = tag.TagId, Tag = tag.Tag });
                     tags.ToList();
                     return Ok(tags);
                 }
