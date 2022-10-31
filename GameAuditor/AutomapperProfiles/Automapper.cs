@@ -4,12 +4,14 @@ using GameAuditor.Models.ViewModels;
 
 namespace GameAuditor.AutomapperProfiles
 {
-    public class GameAutomapper
+    public class GameAutomapper : Profile
     {
-        static void Main(string[] args)
+        public GameAutomapper()
         {
-            var config = new MapperConfiguration(cfg => cfg.CreateMap<Game, CreateGameViewModel>());
-            var mapper = config.CreateMapper();
+            CreateMap<Game, CreateGameViewModel>().ReverseMap();
+            CreateMap<Game, UpdatePostViewModel>().ReverseMap();
+            CreateMap<Post, CreatePostViewModel>().ReverseMap();
+            CreateMap<Post, UpdatePostViewModel>().ReverseMap();
         }
     }
 }

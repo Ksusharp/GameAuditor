@@ -1,8 +1,4 @@
-﻿using GameAuditor.Models;
-using System.Collections.Generic;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
-using GameAuditor.Models.Interfaces;
+﻿using GameAuditor.Models.Interfaces;
 
 namespace GameAuditor.Repositories.Interfaces
 {
@@ -11,6 +7,7 @@ namespace GameAuditor.Repositories.Interfaces
         IEnumerable<T> GetAll();
         T Get(Guid id);
         void Create(T entity);
+        void CreateRange(IEnumerable<T> entities);
         void Update(T entity);
         void Delete(Guid id);
         T GetTag(T tag);

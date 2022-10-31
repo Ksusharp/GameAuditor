@@ -17,13 +17,12 @@ namespace GameAuditor.Models.ViewModels
 
         [Required]
         [NotNull]
-        //public string Tag { get; set; }
-        public virtual ICollection<Tag> Tags { get; set; }
+        public virtual IEnumerable<PostTag> Tags { get; set; }
 
         [NotNull]
-        public DateTime CreatedDate { get; set; } = DateTime.Now;
+        public DateTime CreatedDate { get; set; }
 
         [NotNull]
-        public DateTime UpdatedDate { get; set; } = DateTime.Now;
+        public DateTime UpdatedDate { get; set; }
     }
 }

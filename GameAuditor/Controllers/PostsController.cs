@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using GameAuditor.Models;
 using GameAuditor.Models.ViewModels;
 using AutoMapper;
-using NuGet.Protocol.Core.Types;
 using GameAuditor.Services.UserService;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GameAuditor.Controllers
 {
@@ -13,35 +12,39 @@ namespace GameAuditor.Controllers
     [ApiController]
     public class PostsController : ControllerBase
     {
-        public IEntityRepository<Post> entityRepository;
+        private readonly IEntityRepository<Post> _entityRepository;
+        private readonly IEntityRepository<PostTag> _postTagRepository;
+        private readonly IEntityRepository<TagNavigation> _tagNavigationRepository;
         private readonly IMapper _mapper;
-        private readonly UserManager<User> _userManager;
-        private readonly IUserService _userService;
 
-        public PostsController(IUserService userService, UserManager<User> userManager, IEntityRepository<Post> repository)
+        public PostsController(IEntityRepository<Post> repository)
         {
             entityRepository = repository;
-            _userService = userService;
-            _userManager = userManager;
         }
 
-        public PostsController(IMapper mapper)
+        public PostsController(IEntityRepository<Post> repository, IEntityRepository<PostTag> postTag,
+            IEntityRepository<TagNavigation> tagNavigationRepository, IMapper mapper, IUserService userService)
         {
+            _entityRepository = repository;
+            _postTagRepository = postTag;
+            _tagNavigationRepository = tagNavigationRepository;
             _mapper = mapper;
+            _userService = userService;
         }
 
         [HttpGet]
         public IEnumerable<Post> GetAll()
         {
-            return entityRepository.GetAll();
+            return _entityRepository.GetAll();
         }
 
         [HttpGet("{id}")]
         public Post Get(Guid id)
         {
-            return entityRepository.Get(id);
+            return _entityRepository.Get(id);
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Create(CreatePostViewModel entity)
         {
@@ -49,8 +52,20 @@ namespace GameAuditor.Controllers
                 return BadRequest(ModelState);
             try
             {
-                entityRepository.Create(_mapper.Map<Post>(entity));
-                entityRepository.Save();
+                var newPost = _mapper.Map<Post>(entity);
+                newPost.OwnerId = _userService.GetMyId();
+                _entityRepository.Create(newPost);
+                if (entity.Tags.Any())
+                {
+                    var existTags = entity.Tags.Select(x => x.Tag).ToList();
+                    var tags = _postTagRepository.GetAll().Where(x => existTags.Contains(x.Tag)).ToList();
+                    if (tags.Any())
+                    {
+                        var newTagsNav = tags.Select(x => new TagNavigation() { TagId = x.Id, PostId = newPost.Id});
+                        _tagNavigationRepository.CreateRange(newTagsNav);
+                    }
+                }
+                _entityRepository.Save();
                 return Ok();
             }
             catch (Exception ex)
@@ -59,53 +74,9 @@ namespace GameAuditor.Controllers
             }
         }
 
+        [Authorize]
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
-        {
-            if (Post.OwnerID = _userService.GetMyId())
-            {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-                try
-                {
-                    entityRepository.Update(_mapper.Map<Post>(entity));
-                    entityRepository.Save();
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
-            }
-            else
-                return BadRequest();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
-            {
-                entityRepository.Delete(id);
-                entityRepository.Save();
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        [HttpGet("{tag}")]
-        public ActionResult<Post> GetTag(Post tag)
-        {
-            return entityRepository.GetTag(tag);
-        }
-        /*
-        [HttpPut("updatetag")]
-        public IActionResult Update(Guid tagId, Guid postId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -119,7 +90,54 @@ namespace GameAuditor.Controllers
             {
                 return BadRequest(ex.Message);
             }
-        
-        }*/
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            var post = _entityRepository.Get(id);
+            if (post.OwnerId == _userService.GetMyId())
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                try
+                {
+                    _entityRepository.Delete(id);
+                    _entityRepository.Save();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
+            }
+            else
+                return BadRequest("You are not the owner of the post");
+        }
+
+        [HttpGet("{tagsfrompost}")]
+        public IActionResult GetTag(Guid id)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var postTags = _tagNavigationRepository.GetAll().Where(x => x.PostId == id);
+            try
+            {
+                if (postTags.Any())
+                {
+                    var tags = from tag in postTags
+                               select new { TagId = tag.TagId, Tag = tag.Tag };
+                    tags.ToList();
+                    return Ok(tags);
+                }
+                else
+                    return BadRequest("Post has no tags");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

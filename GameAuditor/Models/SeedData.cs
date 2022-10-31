@@ -20,25 +20,25 @@ namespace GameAuditor.Models
                     {
                         Title = "Имя поста 1",
                         Content = "Сам пост №1",
-                        Tags = "тег 1, тег 2"
+                        TagType = "тег 1, тег 2"
                     },
                     new Post
                     {
                         Title = "Имя поста 2",
                         Content = "Сам пост №2",
-                        Tags = "тег 3, тег 6"
+                        TagType = "тег 3, тег 6"
                     },
                     new Post
                     {
                         Title = "Имя поста 3",
                         Content = "Сам пост №3",
-                        Tags = "тег 4, тег 3"
+                        TagType = "тег 4, тег 3"
                     },
                     new Post
                     {
                         Title = "Имя поста 4",
                         Content = "Сам пост №4",
-                        Tags = "тег 2, тег 5"
+                        TagType = "тег 2, тег 5"
                     }
                 );
                 context.SaveChanges();

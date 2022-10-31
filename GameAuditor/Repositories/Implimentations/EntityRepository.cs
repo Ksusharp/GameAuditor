@@ -12,7 +12,7 @@ namespace GameAuditor.Repositories.Implimentations
         public EntityRepository(ApplicationContext context)
         {
             this.context = context;
-            this.dbSet = context.Set<T>();
+            dbSet = context.Set<T>();
         }
         public IEnumerable<T> GetAll()
         {
@@ -22,11 +22,16 @@ namespace GameAuditor.Repositories.Implimentations
         {
             return dbSet.Find(id);
         }
+
         public void Create(T entity)
         {
-            //entity.Id = Guid.Empty;
             dbSet.Add(entity);
-        } 
+        }
+
+        public void CreateRange(IEnumerable<T> entities)
+        {
+            dbSet.AddRange(entities);
+        }
         
         public void Update(T entity)
         {

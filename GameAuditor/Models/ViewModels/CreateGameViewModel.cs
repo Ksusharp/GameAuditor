@@ -16,7 +16,7 @@ namespace GameAuditor.Models.ViewModels
 
         [Required]
         [NotNull]
-        public virtual ICollection<Genre> Genres { get; set; }
+        public virtual IEnumerable<Genre> Genres { get; set; }
         //public string Genre { get; set; }
 
         [MaxLength(1000)]

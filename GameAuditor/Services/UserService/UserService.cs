@@ -1,4 +1,5 @@
-﻿using System.Security.Claims;
+﻿using Microsoft.AspNetCore.SignalR;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 
 namespace GameAuditor.Services.UserService
@@ -21,7 +22,6 @@ namespace GameAuditor.Services.UserService
             }
             return result;
         }
-
         public string GetMyId()
         {
             var result = string.Empty;
