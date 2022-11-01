@@ -10,14 +10,10 @@ namespace GameAuditor.Models.ViewModels
         public string Name { get; set; }
 
         [Required]
-        [NotNull]
         public virtual ICollection<Platform> Platforms { get; set; }
-        //public string Platform { get; set; }
 
         [Required]
-        [NotNull]
         public virtual IEnumerable<Genre> Genres { get; set; }
-        //public string Genre { get; set; }
 
         [MaxLength(1000)]
         public string? Description { get; set; }

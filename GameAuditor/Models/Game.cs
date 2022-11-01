@@ -11,11 +11,9 @@ namespace GameAuditor.Models
         public string Name { get; set; }
 
         [Required]
-        [NotNull]
         public IList<Platform> Platform { get; set; }
 
         [Required]
-        [NotNull]
         public IList<Genre> Genre { get; set; }
 
         [MaxLength(1000)]

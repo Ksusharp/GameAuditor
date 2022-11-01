@@ -18,6 +18,10 @@ namespace GameAuditor.Database
 
         public DbSet<TagNavigation> TagNavigation { get; set; }
 
+        public DbSet<User> User { get; set; }
+
+        public DbSet<RefreshToken> RefreshToken { get; set; }
+
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -30,7 +34,8 @@ namespace GameAuditor.Database
             modelBuilder.Entity<PostTag>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
             modelBuilder.Entity<PostTag>().HasIndex(x => x.Tag).IsUnique();
             modelBuilder.Entity<Game>().Property(x => x.Id).HasDefaultValueSql("NEWID()"); 
-            modelBuilder.Entity<TagNavigation>().Property(x => x.Id).HasDefaultValueSql("NEWID()");      
+            modelBuilder.Entity<TagNavigation>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+            modelBuilder.Entity<RefreshToken>().Property(x => x.Created).HasDefaultValueSql("GETDATE()");
         }
     }
 }

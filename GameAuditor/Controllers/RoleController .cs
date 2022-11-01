@@ -58,7 +58,7 @@ namespace GameAuditor.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpDelete]
+        [HttpDelete("deleterole")]
         public async Task<IActionResult> Delete(string id)
         {
             IdentityRole role = await _roleManager.FindByIdAsync(id);
@@ -104,14 +104,14 @@ namespace GameAuditor.Controllers
             var user = await _userManager.FindByIdAsync(userId.ToString());
             if (user != null)
             {
-                if (await _userManager.IsInRoleAsync(user, roleName))
+                if (await _roleManager.FindByNameAsync(roleName) != null)
                 {
                     await _userManager.AddToRoleAsync(user, roleName);
                     return Ok();
                 }
-                else return BadRequest("No Role");
+                else return BadRequest("Role not found");
             }
-            else return BadRequest("No user");
+            else return BadRequest("User not found");
         }
 
         [Authorize(Roles = "Admin")]
@@ -126,9 +126,9 @@ namespace GameAuditor.Controllers
                     await _userManager.RemoveFromRoleAsync(user, roleName);
                     return Ok();
                 }
-                else return BadRequest("No Role");
+                else return BadRequest("User does not have this role");
             }
-            else return BadRequest("No user");
+            else return BadRequest("User not found");
         }
     }
 }

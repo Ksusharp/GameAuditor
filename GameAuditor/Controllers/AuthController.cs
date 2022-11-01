@@ -65,7 +65,34 @@ namespace GameAuditor.Controllers
 
             return Ok(token);
         }
+        [HttpPost("refreshtoken")]
+        public async Task<ActionResult<string>> RefreshToken()
+        {
+            var userName = _userService.GetMyName();
+            var user = await _userManager.FindByNameAsync(userName);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
 
+            var refreshToken = Request.Cookies["refreshToken"];
+
+            if (user.RefreshToken != refreshToken)
+            {
+                return Unauthorized("Invalid refresh token");
+            }
+            else if (user.TokenExpires < DateTime.Now) 
+            {
+                return Unauthorized("Token expired");
+            }
+
+            string token = CreateToken(user);
+            var newRefreshToken = GenerateRefreshToken();
+            SetRefreshToken(user, newRefreshToken);
+
+            return Ok(token);
+        }
+        /*
         [HttpPost("refreshtoken")]
         public async Task<ActionResult<string>> RefreshToken()
         {
@@ -93,7 +120,7 @@ namespace GameAuditor.Controllers
 
             return Ok(token);
         }
-
+        */
         private RefreshToken GenerateRefreshToken()
         {
             var refreshToken = new RefreshToken
