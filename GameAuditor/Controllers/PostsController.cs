@@ -16,8 +16,11 @@ namespace GameAuditor.Controllers
         private readonly IEntityRepository<PostTag> _postTagRepository;
         private readonly IEntityRepository<TagNavigation> _tagNavigationRepository;
         private readonly IMapper _mapper;
-        private readonly IUserService _userService;
 
+        public PostsController(IEntityRepository<Post> repository)
+        {
+            entityRepository = repository;
+        }
 
         public PostsController(IEntityRepository<Post> repository, IEntityRepository<PostTag> postTag,
             IEntityRepository<TagNavigation> tagNavigationRepository, IMapper mapper, IUserService userService)
@@ -75,24 +78,18 @@ namespace GameAuditor.Controllers
         [HttpPut]
         public IActionResult Update(UpdatePostViewModel entity)
         {
-            var newPost = _mapper.Map<Post>(entity);
-            if (newPost.OwnerId == _userService.GetMyId())
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            try
             {
-                if (!ModelState.IsValid)
-                    return BadRequest(ModelState);
-                try
-                {
-                    _entityRepository.Update(newPost);
-                    _entityRepository.Save();
-                    return Ok();
-                }
-                catch (Exception ex)
-                {
-                    return BadRequest(ex.Message);
-                }
+                entityRepository.Update(_mapper.Map<Post>(entity));
+                entityRepository.Save();
+                return Ok();
             }
-            else
-                return BadRequest("You are not the owner of the post");
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         [Authorize]
