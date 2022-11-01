@@ -14,7 +14,7 @@ namespace GameAuditor.Models.ViewModels
         public string Content { get; set; }
 
         [Required]
-        public IEnumerable<PostTag> Tags { get; set; }
+        public virtual IEnumerable<PostTag> Tags { get; set; }
 
         public DateTime CreatedDate { get; set; }
 
