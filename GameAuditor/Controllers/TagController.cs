@@ -37,5 +37,11 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("{getalltags}")]
+        public Post GetAllTags()
+        {
+            return _entityRepository.GetAllTags();
+        }
     }
 }

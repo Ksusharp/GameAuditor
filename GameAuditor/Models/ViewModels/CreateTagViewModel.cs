@@ -2,5 +2,6 @@
 {
     public class CreateTagViewModel
     {
+        public string Tag { get; set; }
     }
 }

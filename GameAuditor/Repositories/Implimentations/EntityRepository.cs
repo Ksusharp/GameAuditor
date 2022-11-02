@@ -18,6 +18,10 @@ namespace GameAuditor.Repositories.Implimentations
         {
             return dbSet.ToList();
         }
+        public IEnumerable<T> GetAllFromDB()
+        {
+            return dbSet.ToList();
+        }
         public T Get(Guid id)
         {
             return dbSet.Find(id);

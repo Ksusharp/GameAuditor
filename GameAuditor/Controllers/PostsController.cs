@@ -16,11 +16,7 @@ namespace GameAuditor.Controllers
         private readonly IEntityRepository<PostTag> _postTagRepository;
         private readonly IEntityRepository<TagNavigation> _tagNavigationRepository;
         private readonly IMapper _mapper;
-
-        public PostsController(IEntityRepository<Post> repository)
-        {
-            entityRepository = repository;
-        }
+        private readonly IUserService _userService;
 
         public PostsController(IEntityRepository<Post> repository, IEntityRepository<PostTag> postTag,
             IEntityRepository<TagNavigation> tagNavigationRepository, IMapper mapper, IUserService userService)
@@ -61,7 +57,7 @@ namespace GameAuditor.Controllers
                     var tags = _postTagRepository.GetAll().Where(x => existTags.Contains(x.Tag)).ToList();
                     if (tags.Any())
                     {
-                        var newTagsNav = tags.Select(x => new TagNavigation() { TagId = x.Id, PostId = newPost.Id});
+                        var newTagsNav = tags.Select(x => new TagNavigation() { TagId = x.Id, PostId = newPost.Id });
                         _tagNavigationRepository.CreateRange(newTagsNav);
                     }
                 }
@@ -82,8 +78,8 @@ namespace GameAuditor.Controllers
                 return BadRequest(ModelState);
             try
             {
-                entityRepository.Update(_mapper.Map<Post>(entity));
-                entityRepository.Save();
+                _entityRepository.Update(_mapper.Map<Post>(entity));
+                _entityRepository.Save();
                 return Ok();
             }
             catch (Exception ex)
@@ -138,6 +134,32 @@ namespace GameAuditor.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+        
+        [HttpGet("{getpostwithtagorsearch}")]
+        public async Task<IActionResult> GetPost(string tag, string searchString)
+        {
+            var posts = from m in _entityRepository.GetTag()
+                        select m;
+
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                posts = posts.GetAll.Where(p => p.Title!.Contains(searchString));
+            }
+
+            if (!string.IsNullOrEmpty(tag))
+            {
+                posts = posts.Where(x => x.Tag == tag);
+            }
+
+            var movieGenreVM = new MovieGenreViewModel
+            {
+                Tags = new SelectList(await genreQuery.Distinct().ToListAsync()),
+                Posts = await posts.ToListAsync()
+            };
+
+            return Ok(Posts);
         }
     }
 }

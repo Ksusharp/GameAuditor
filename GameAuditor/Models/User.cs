@@ -5,7 +5,7 @@ namespace GameAuditor.Models
 {
     public class User : IdentityUser
     {
-        public string RefreshToken { get; set; } = string.Empty;
+        public string RefreshToken { get; set; }
 
         public DateTime TokenCreated { get; set; }
 
