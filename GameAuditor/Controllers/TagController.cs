@@ -39,9 +39,9 @@ namespace GameAuditor.Controllers
         }
 
         [HttpGet("{getalltags}")]
-        public Post GetAllTags()
+        public IEnumerable<PostTag> GetAllTags()
         {
-            return _entityRepository.GetAllTags();
+            return _entityRepository.GetAll();
         }
     }
 }

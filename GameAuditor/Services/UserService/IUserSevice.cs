@@ -4,5 +4,7 @@
     {
         string GetMyName();
         string GetMyId();
+
+        string GetCookiesRefreshToken();
     }
 }

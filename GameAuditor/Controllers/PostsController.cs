@@ -5,6 +5,7 @@ using GameAuditor.Models.ViewModels;
 using AutoMapper;
 using GameAuditor.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace GameAuditor.Controllers
 {
@@ -42,18 +43,18 @@ namespace GameAuditor.Controllers
 
         [Authorize]
         [HttpPost]
-        public IActionResult Create(CreatePostViewModel entity)
+        public IActionResult Create(CreatePostViewModel postEntity)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             try
             {
-                var newPost = _mapper.Map<Post>(entity);
+                var newPost = _mapper.Map<Post>(postEntity);
                 newPost.OwnerId = _userService.GetMyId();
                 _entityRepository.Create(newPost);
-                if (entity.Tags.Any())
+                if (postEntity.Tags.Any())
                 {
-                    var existTags = entity.Tags.Select(x => x.Tag).ToList();
+                    var existTags = postEntity.Tags.Select(x => x.Tag).ToList();
                     var tags = _postTagRepository.GetAll().Where(x => existTags.Contains(x.Tag)).ToList();
                     if (tags.Any())
                     {
@@ -124,7 +125,6 @@ namespace GameAuditor.Controllers
                 {
                     var tags = from tag in postTags
                                select new { TagId = tag.TagId, Tag = tag.Tag };
-                    tags.ToList();
                     return Ok(tags);
                 }
                 else
@@ -139,27 +139,26 @@ namespace GameAuditor.Controllers
         [HttpGet("{getpostwithtagorsearch}")]
         public async Task<IActionResult> GetPost(string tag, string searchString)
         {
-            var posts = from m in _entityRepository.GetTag()
-                        select m;
-
+            var tags = _postTagRepository.GetAll().Select(x => x.Tag);
+            var posts = _entityRepository.GetAll();
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                posts = posts.GetAll.Where(p => p.Title!.Contains(searchString));
+                posts = posts.Where(p => p.Title!.Contains(searchString));
             }
 
             if (!string.IsNullOrEmpty(tag))
             {
-                posts = posts.Where(x => x.Tag == tag);
+                posts = posts.Where(p => p.Tag == tag);
             }
 
-            var movieGenreVM = new MovieGenreViewModel
+            var postTagViewModel = new PostTagViewModel
             {
-                Tags = new SelectList(await genreQuery.Distinct().ToListAsync()),
-                Posts = await posts.ToListAsync()
+                Tags = new SelectList(tags.Distinct().ToList()),
+                Posts = posts.ToList()
             };
 
-            return Ok(Posts);
+            return Ok(postTagViewModel);
         }
     }
 }

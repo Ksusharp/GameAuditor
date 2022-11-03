@@ -75,7 +75,7 @@ namespace GameAuditor.Controllers
                 return BadRequest("User not found");
             }
 
-            var refreshToken = Request.Cookies["refreshToken"];
+            var refreshToken = _userService.GetCookiesRefreshToken();
 
             if (user.RefreshToken != refreshToken)
             {
