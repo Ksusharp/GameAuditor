@@ -89,6 +89,7 @@ namespace GameAuditor.Controllers
             string token = CreateToken(user);
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(user, newRefreshToken);
+            //Response.Cookies.Append("refreshToken", token);
 
             return Ok(token);
         }

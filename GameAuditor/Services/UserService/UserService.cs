@@ -36,7 +36,7 @@ namespace GameAuditor.Services.UserService
             var result = string.Empty;
             if (_httpContextAccessor.HttpContext != null)
             {
-                result = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
+                result = Convert.ToString(_httpContextAccessor.HttpContext.Request.Cookies["RefreshToken"]);
             }
             return result;
         }

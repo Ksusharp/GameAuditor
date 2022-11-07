@@ -18,7 +18,8 @@ namespace GameAuditor.Models
         public string Content { get; set; }
 
         [Required]
-        public IList<TagNavigation> TagNavigation { get; set; }
+        //public IList<TagNavigation> TagNavigation { get; set; }
+        public IEnumerable<TagNavigation> TagNavigation { get; set; }
 
         [NotNull]
         public DateTime? CreatedDate { get; set; }

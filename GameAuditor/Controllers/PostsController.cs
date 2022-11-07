@@ -62,6 +62,7 @@ namespace GameAuditor.Controllers
                         _tagNavigationRepository.CreateRange(newTagsNav);
                     }
                 }
+                _tagNavigationRepository.Save();
                 _entityRepository.Save();
                 return Ok();
             }
@@ -149,7 +150,16 @@ namespace GameAuditor.Controllers
 
             if (!string.IsNullOrEmpty(tag))
             {
-                posts = posts.Where(p => p.Tag == tag);
+                //posts = posts.Where(p => p.Tag == tag);
+
+                //posts = await posts
+               //      .Include(t => t.TagNavigation)
+                //    .Where(t => t.Tag == tag);
+
+                //var viewModel = new Post();
+                //viewModel.TagNavigation = await _entityRepository.TagNavigation;
+
+
             }
 
             var postTagViewModel = new PostTagViewModel
