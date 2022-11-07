@@ -52,6 +52,7 @@ namespace GameAuditor.Controllers
                 var newPost = _mapper.Map<Post>(postEntity);
                 newPost.OwnerId = _userService.GetMyId();
                 _entityRepository.Create(newPost);
+                _entityRepository.Save();
                 if (postEntity.Tags.Any())
                 {
                     var existTags = postEntity.Tags.Select(x => x.Tag).ToList();
@@ -63,7 +64,7 @@ namespace GameAuditor.Controllers
                     }
                 }
                 _tagNavigationRepository.Save();
-                _entityRepository.Save();
+
                 return Ok();
             }
             catch (Exception ex)
