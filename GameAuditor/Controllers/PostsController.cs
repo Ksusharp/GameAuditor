@@ -29,12 +29,14 @@ namespace GameAuditor.Controllers
             _userService = userService;
         }
 
+        [AllowAnonymous]
         [HttpGet]
         public IEnumerable<Post> GetAll()
         {
             return _entityRepository.GetAll();
         }
 
+        [AllowAnonymous]
         [HttpGet("{id}")]
         public Post Get(Guid id)
         {
@@ -74,20 +76,26 @@ namespace GameAuditor.Controllers
 
         [Authorize]
         [HttpPut]
-        public IActionResult Update(UpdatePostViewModel entity)
+        public IActionResult Update(UpdatePostViewModel entity, Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            try
+            var post = _entityRepository.Get(id);
+            if (post.OwnerId == _userService.GetMyId())
             {
-                _entityRepository.Update(_mapper.Map<Post>(entity));
-                _entityRepository.Save();
-                return Ok();
+                if (!ModelState.IsValid)
+                    return BadRequest(ModelState);
+                try
+                {
+                    _entityRepository.Update(_mapper.Map<Post>(entity));
+                    _entityRepository.Save();
+                    return Ok();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(ex.Message);
+                }
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            else
+                return BadRequest("You are not the owner of the post");
         }
 
         [Authorize]
@@ -114,6 +122,7 @@ namespace GameAuditor.Controllers
                 return BadRequest("You are not the owner of the post");
         }
 
+        [AllowAnonymous]
         [HttpGet("{tagsfrompost}")]
         public IActionResult GetTag(Guid id)
         {
@@ -136,7 +145,8 @@ namespace GameAuditor.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        
+
+        [AllowAnonymous]
         [HttpGet("{getpostwithtagorsearch}")]
         public async Task<IActionResult> GetPost(string tag, string searchString)
         {

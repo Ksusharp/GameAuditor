@@ -7,6 +7,7 @@ using AutoMapper;
 using GameAuditor.Repositories.Interfaces;
 using GameAuditor.Services.UserService;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GameAuditor.Controllers
 {
@@ -21,6 +22,7 @@ namespace GameAuditor.Controllers
             _entityRepository = repository;
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public IActionResult Create(PostTag entity)
         {
@@ -38,6 +40,7 @@ namespace GameAuditor.Controllers
             }
         }
 
+        [AllowAnonymous]
         [HttpGet("{getalltags}")]
         public IEnumerable<PostTag> GetAllTags()
         {

@@ -1,4 +1,5 @@
-﻿using GameAuditor.Models;
+﻿using GameAuditor.Database;
+using GameAuditor.Models;
 using GameAuditor.Models.ViewModels;
 using GameAuditor.Services.UserService;
 using Microsoft.AspNetCore.Authorization;
@@ -29,13 +30,15 @@ namespace GameAuditor.Controllers
             _signInManager = signInManager;
         }
 
-        [HttpGet("getme"), Authorize]
+        [Authorize]
+        [HttpGet("getme")]
         public ActionResult<string> GetMe()
         {
             var UserName = _userService.GetMyName();
             return Ok(UserName);
         }
 
+        [AllowAnonymous]
         [HttpPost("register")]
         public async Task<ActionResult<User>> Register(LoginViewModel request)
         {
@@ -44,10 +47,10 @@ namespace GameAuditor.Controllers
             user.UserName = request.UserName;
 
             var result = await _userManager.CreateAsync(user, request.Password);
-
             return Ok(result);
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginViewModel request)
         {
@@ -63,8 +66,12 @@ namespace GameAuditor.Controllers
 
             string token = CreateToken(user);
 
+            await _userManager.UpdateAsync(user);//
+
             return Ok(token);
         }
+
+        [Authorize]
         [HttpPost("refreshtoken")]
         public async Task<ActionResult<string>> RefreshToken()
         {
@@ -89,7 +96,7 @@ namespace GameAuditor.Controllers
             string token = CreateToken(user);
             var newRefreshToken = GenerateRefreshToken();
             SetRefreshToken(user, newRefreshToken);
-            //Response.Cookies.Append("refreshToken", token);
+            await _userManager.UpdateAsync(user);//
 
             return Ok(token);
         }
@@ -146,6 +153,7 @@ namespace GameAuditor.Controllers
             user.RefreshToken = newRefreshToken.Token;
             user.TokenCreated = newRefreshToken.Created;
             user.TokenExpires = newRefreshToken.Expires;
+            _userManager.UpdateAsync(user); //
         }
 
         private string CreateToken(User user)
