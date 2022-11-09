@@ -37,7 +37,7 @@ namespace GameAuditor.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{id}")]
+        [HttpGet("id")]
         public Post Get(Guid id)
         {
             return _entityRepository.Get(id);
@@ -77,7 +77,7 @@ namespace GameAuditor.Controllers
 
         [Authorize]
         [HttpPut]
-        public IActionResult Update(UpdatePostViewModel entity, Guid id)
+        public IActionResult Update(UpdatePostViewModel postEntity, Guid id)
         {
             var post = _entityRepository.Get(id);
             if (post.OwnerId == _userService.GetMyId())
@@ -86,7 +86,7 @@ namespace GameAuditor.Controllers
                     return BadRequest(ModelState);
                 try
                 {
-                    _entityRepository.Update(_mapper.Map<Post>(entity));
+                    _entityRepository.Update(_mapper.Map<Post>(postEntity));
                     _entityRepository.Save();
                     return Ok();
                 }
@@ -100,7 +100,7 @@ namespace GameAuditor.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id}")]
+        [HttpDelete("id")]
         public IActionResult Delete(Guid id)
         {
             var post = _entityRepository.Get(id);
@@ -124,7 +124,7 @@ namespace GameAuditor.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{tagsfrompost}")]
+        [HttpGet("tagsfrompost")]
         public IActionResult GetTag(Guid id)
         {
             if (!ModelState.IsValid)
@@ -148,7 +148,7 @@ namespace GameAuditor.Controllers
         }
 
         [AllowAnonymous]
-        [HttpGet("{getpostwithtagorsearch}")]
+        [HttpGet("getpostwithtagorsearch")]
         public async Task<IActionResult> GetPost(string tag, string searchString)
         {
             var tags = _postTagRepository.GetAll().Select(x => x.Tag);
