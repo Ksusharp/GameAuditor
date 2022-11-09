@@ -10,11 +10,11 @@ namespace GameAuditor.Models
         [MaxLength(150)]
         public string Name { get; set; }
 
-        [Required]
-        public IList<Platform> Platform { get; set; }
+        //[Required]
+        //public IList<Platform> Platform { get; set; }
 
-        [Required]
-        public IList<Genre> Genre { get; set; }
+       // [Required]
+       // public IList<Genre> Genre { get; set; }
 
         [MaxLength(1000)]
         public string? Description { get; set; }

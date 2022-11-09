@@ -12,9 +12,9 @@ namespace GameAuditor.Database
 
         public DbSet<PostTag> Tags { get; set; }
 
-        public DbSet<Genre> Genres { get; set; }
+       // public DbSet<Genre> Genres { get; set; }
 
-        public DbSet<Platform> Platforms { get; set; }
+        //public DbSet<Platform> Platforms { get; set; }
 
         public DbSet<TagNavigation> TagNavigation { get; set; }
 

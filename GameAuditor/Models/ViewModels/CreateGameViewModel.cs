@@ -9,11 +9,11 @@ namespace GameAuditor.Models.ViewModels
         [MaxLength(150)]
         public string Name { get; set; }
 
-        [Required]
-        public virtual ICollection<Platform> Platforms { get; set; }
+       // [Required]
+        //public virtual ICollection<Platform> Platforms { get; set; }
 
-        [Required]
-        public virtual IEnumerable<Genre> Genres { get; set; }
+       // [Required]
+        //public virtual IEnumerable<Genre> Genres { get; set; }
 
         [MaxLength(1000)]
         public string? Description { get; set; }
