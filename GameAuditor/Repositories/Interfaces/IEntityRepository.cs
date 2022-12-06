@@ -10,6 +10,7 @@ namespace GameAuditor.Repositories.Interfaces
         void CreateRange(IEnumerable<T> entities);
         void Update(T entity);
         void Delete(Guid id);
+        //void RemoveAll(Guid id);
         T GetTag(T tag);
         T GetGenre(T genre);
         T GetPlatform(T platform);

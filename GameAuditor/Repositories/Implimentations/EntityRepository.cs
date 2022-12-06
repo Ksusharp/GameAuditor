@@ -44,6 +44,11 @@ namespace GameAuditor.Repositories.Implimentations
             T entity = dbSet.Find(id);
             dbSet.Remove(entity);
         }
+        /*
+        public void RemoveAll(Guid id)
+        {
+            dbSet.RemoveAll(id);
+        }*/
         public T GetTag(T tag)
         {
             return dbSet.Find(tag);

@@ -111,17 +111,23 @@ namespace GameAuditor.Controllers
                 
                 try
                 {
-                    /*
-                    if (post.Tags.Any())
+                    
+                    if (post.TagNavigation.Any())
                     {
-                        var existTags = post.TagNavigation.Select(x => x.Tag).ToList();
-                        var tags = _postTagRepository.GetAll().Where(x => existTags.Contains(x.Tag)).ToList();
+
+                        _tagNavigationRepository.RemoveAll(post.Id);
+
+                        //var existTags = post.Include(post => post.TagNavigation).ToList();
+                        //var existTags = post.TagNavigation.PostTag.Select(x => x.Tag).ToList();
+                        //var tags = _postTagRepository.GetAll().Where(x => existTags.Contains(x.Tag)).ToList();
+
+                        /*
                         if (tags.Any())
                         {
-                            var newTagsNav = tags.Select(x => new TagNavigation() { TagId = x.Id, PostId = newPost.Id });
+                            var deleteTagsNav = tags.Select(x => new TagNavigation() { TagId = x.Id, PostId = newPost.Id });
                             _tagNavigationRepository.CreateRange(newTagsNav);
-                        }
-                    }*/
+                        }*/
+                    }
                 
                     _entityRepository.Delete(id);
                     _entityRepository.Save();
@@ -149,6 +155,7 @@ namespace GameAuditor.Controllers
                 if (postTags.Any())
                 {
                     var tags = postTags.Select(tag => new { TagId = tag.TagId, Tag = tag.Tag });
+                    //var tags = postTags.Select(tag => new { TagId = tag.TagId, Tag = tag.Tag });
                     return Ok(tags);
                 }
                 else

@@ -33,6 +33,9 @@ namespace GameAuditor.Database
             modelBuilder.Entity<PostTag>().HasIndex(x => x.Tag).IsUnique();
             modelBuilder.Entity<Game>().Property(x => x.Id).HasDefaultValueSql("NEWID()"); 
             modelBuilder.Entity<TagNavigation>().Property(x => x.Id).HasDefaultValueSql("NEWID()");
+
+            modelBuilder.Entity<PostTag>().ToTable("PostTag");
+            modelBuilder.Entity<Post>().ToTable("Post");
         }
     }
 }

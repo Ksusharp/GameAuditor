@@ -10,6 +10,6 @@ namespace GameAuditor.Models
 
         public Guid? TagId { get; set; }
 
-        public PostTag Tag { get; set; }
+        public PostTag PostTag { get; set; }
     }
 }
